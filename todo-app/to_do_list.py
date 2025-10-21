@@ -9,12 +9,12 @@ class ToDoList(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowFlag(Qt.FramelessWindowHint)
-        self.setFixedSize(450, 500)
-        self.title = QLabel("Daily Task(‾◡◝)")
-        self.add_btn = QPushButton("Add")
+        self.setFixedSize(400, 450)
+        self.title = QLabel("To-Do List🎯")
+        self.add_btn = QPushButton("➕", objectName="add_btn")
         self.textbox = QLineEdit()
-        self.save_btn = QPushButton("Save")
-        self.del_btn = QPushButton("Delete")
+        self.save_btn = QPushButton("Save to File", objectName="save_btn")
+        self.del_btn = QPushButton("Delete", objectName="del_btn")
         self.task_list = QListWidget()
         self.file_path = os.path.join(os.path.dirname(__file__), "qtasks.txt")
         self.load_task()
@@ -26,45 +26,71 @@ class ToDoList(QWidget):
         self.setStyleSheet("""
             QWidget {
                 background-color: #202021;
-                margin: 5px;              
+                margin: 5px 1px;              
             }
                            
             QPushButton, QLineEdit, QListWidget {
-                font-family: Arial;
-                border-radius: 10px; 
+                font-family: MADE Outer Sans;
+                border-radius: 3px;
             }
                            
             QLabel {
-                color: #70d14f;
-                font-family: Ari-W9500;
-                font-size: 35px;
-
+                color: white;
+                font-family: MADE Outer Sans;
+                font-size: 29px;
+                margin: 0;
             }        
 
             QLineEdit {
                 color: white;
-                background-color: #202021;
-                border: 1px solid #828285;
+                background-color: #2f2f30;
                 padding: 10px 15px;
                 font-size: 15px;
-                
+                margin-top: 12px;
             }
                            
             QPushButton {
-                background-color: #70d14f;
-                padding: 10px 50px;
+                background-color: #2e2b36;
+                padding: 10px 20px;
                 font-size: 15px;
-                font-weight: bold;
+                color: white;
+            }
+                           
+            QPushButton#add_btn {
+                margin-top: 12px;
+            }
+                           
+            QPushButton#save_btn {
+                background-color: #d4423e; 
+            }
+                           
+            QPushButton#del_btn {
+                background-color: #2f2f30;
+                color: #878787;
             }
                            
             QListWidget {
                 color: white;
-                font-family: Arial;
-                font-size: 17px;
-                border: 1px solid #828285;
+                font-family: Poppins;
+                font-size: 16px;
             }
 
-            
+            QListWidget::item {
+                color: white;
+                
+            }
+                           
+            QListWidget::item:selected {
+                background-color: #2f2f30;
+                border-radius: 3px;
+                
+            }
+                           
+            QListWidget::item:hover {
+                background-color: #2f2f30;
+                border-radius: 3px;
+                
+            }
         """)
 
 
@@ -94,7 +120,7 @@ class ToDoList(QWidget):
         vbox.addWidget(self.task_list)
         vbox.addLayout(hbox2)
 
-        vbox.setContentsMargins(20, 20, 20, 20)
+        vbox.setContentsMargins(30, 25, 30, 25)
 
         self.setLayout(vbox)
 
@@ -107,6 +133,7 @@ class ToDoList(QWidget):
         item = QListWidgetItem(task)
         item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
         item.setCheckState(Qt.Unchecked)
+
         self.task_list.addItem(item)
         self.textbox.clear()
 
