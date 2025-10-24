@@ -1,10 +1,13 @@
 import sys
 import requests
+import os
+from dotenv import load_dotenv
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
                              QLabel, QLineEdit, QPushButton)
 from PyQt5.Qt import Qt
 
-API_KEY = "3266c4bea36531276e0350b6a22e2960"
+load_dotenv()
+API_KEY = os.getenv("API_KEY")
 
 class WeatherApp(QWidget):
     def __init__(self):
@@ -25,7 +28,7 @@ class WeatherApp(QWidget):
             QWidget {
                 background-color: white;
                 margin: 2px 1px;              
-            }
+            }z
                            
             QLabel, QLineEdit, QPushButton {
                 font-family: Poppins;
