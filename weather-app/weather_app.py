@@ -15,10 +15,12 @@ class WeatherApp(QWidget):
 
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setFixedSize(400, 450)
-        self.title = QLabel("🌥️ Weather App")
+        self.title = QLabel("Weather App", objectName="title")
         self.textbox = QLineEdit()
         self.search_btn = QPushButton("Get Weather")
-        self.city_info = QLabel(objectName="city_info")
+        self.city = QLabel(objectName="city")
+        self.temperature = QLabel(objectName="temperature")
+        self.description = QLabel(objectName="description")
         self.initUI()
         self.designUI()
 
@@ -26,35 +28,49 @@ class WeatherApp(QWidget):
     def designUI(self):
         self.setStyleSheet("""
             QWidget {
-                background-color: white;
+                background-color: #f0f1f7;
                 margin: 2px 1px;              
-            }z
+            }
                            
             QLabel, QLineEdit, QPushButton {
                 font-family: Poppins;
-                font-size: 15px;
             }
                            
             QLabel {
+                font-size: 15px;
+                color: #192142;
+            }
+                           
+            QLabel#title {
                 font-size: 30px;
             }
                            
-            QLabel#city_info {
-                font-size: 20px;s
+            QLabel#temperature {
+                font-size: 60px;
             }
-                           
+            
+            QLineEdit, QPushButton {
+                font-size: 15px;
+                border-radius: 7px;
+            }
+            
             QLineEdit {
-                padding: 10px;
+                padding: 8px;
+                background-color: #f0f1f7;
+                color: #192142;
+                border: 1px solid #85899c;
             }
                            
             QPushButton {
-                padding: 10px 15px;
+                padding: 10px 18px;
+                color: #f0f1f7;
+                background-color: #192142;
             }
         """)
 
 
     def initUI(self):
-        self.textbox.setPlaceholderText("Search for city...")
+        self.textbox.setPlaceholderText("Search for place...")
         self.textbox.returnPressed.connect(self.get_weather)
 
         self.search_btn.setCursor(Qt.PointingHandCursor)
@@ -63,12 +79,14 @@ class WeatherApp(QWidget):
         hbox = QHBoxLayout()
         hbox.addWidget(self.textbox)
         hbox.addWidget(self.search_btn)
-
+        
         vbox = QVBoxLayout()
-        vbox.addWidget(self.title)
+        vbox.addWidget(self.title, alignment=Qt.AlignHCenter)
         vbox.addLayout(hbox)
-        vbox.addWidget(self.city_info)
-        vbox.setContentsMargins(30, 15, 30, 15)
+        vbox.addWidget(self.temperature, alignment=Qt.AlignHCenter)
+        vbox.addWidget(self.city, alignment=Qt.AlignHCenter)
+        vbox.addWidget(self.description, alignment=Qt.AlignHCenter)
+        vbox.setContentsMargins(40, 15, 40, 15)
 
         self.setLayout(vbox)
 
@@ -88,10 +106,14 @@ class WeatherApp(QWidget):
                 data = response.json()                  
                 city_name = data["name"]
                 temp = data["main"]["temp"]
-                description = data["weather"][0]["description"] 
-                self.city_info.setText(f"{city_name}: {description}, {temp}°C")
+                description = data["weather"][0]["description"]
+                country = data["sys"]["country"]
+
+                self.temperature.setText(f"{temp}°")
+                self.description.setText(description)
+                self.city.setText(f"{city_name}, {country}")
             else:
-                self.city_info.setText("⚠️ City not found")
+                self.city.setText("⚠️ City not found")
         except requests.exceptions.RequestException:
             return None
         
