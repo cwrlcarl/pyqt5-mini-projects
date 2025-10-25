@@ -1,9 +1,11 @@
-import sys
-import requests
+import json
 import os
+import requests
+import sys
 from dotenv import load_dotenv
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
                              QLabel, QLineEdit, QPushButton)
+from PyQt5.QtGui import QPixmap
 from PyQt5.Qt import Qt
 
 load_dotenv()
@@ -18,11 +20,26 @@ class WeatherApp(QWidget):
         self.title = QLabel("Weather App", objectName="title")
         self.textbox = QLineEdit()
         self.search_btn = QPushButton("Get Weather")
+        self.weather_icon = QLabel(objectName="icon")
         self.city = QLabel(objectName="city")
         self.temperature = QLabel(objectName="temperature")
-        self.description = QLabel(objectName="description")
-        self.initUI()
+        self.weather = QLabel(objectName="weather")
+        self.icon_map = self.load_icon()
         self.designUI()
+        self.initUI()
+
+
+    def load_icon(self):
+        try:
+            base_path = os.path.dirname(os.path.abspath(__file__))
+            json_path = os.path.join(base_path, "weather_icons.json")
+
+            with open(json_path, "r") as file:
+                return json.load(file)
+            
+        except (FileNotFoundError, json.JSONDecodeError):
+            print("⚠️ weather_icons.json not found")
+            return {}
 
 
     def designUI(self):
@@ -37,6 +54,11 @@ class WeatherApp(QWidget):
             }
                            
             QLabel {
+                font-size: 15px;
+                color: #192142;
+            }
+                           
+            QLabel#icon {
                 font-size: 15px;
                 color: #192142;
             }
@@ -83,9 +105,10 @@ class WeatherApp(QWidget):
         vbox = QVBoxLayout()
         vbox.addWidget(self.title, alignment=Qt.AlignHCenter)
         vbox.addLayout(hbox)
+        vbox.addWidget(self.weather_icon, alignment=Qt.AlignHCenter)
         vbox.addWidget(self.temperature, alignment=Qt.AlignHCenter)
         vbox.addWidget(self.city, alignment=Qt.AlignHCenter)
-        vbox.addWidget(self.description, alignment=Qt.AlignHCenter)
+        vbox.addWidget(self.weather, alignment=Qt.AlignHCenter)
         vbox.setContentsMargins(40, 15, 40, 15)
 
         self.setLayout(vbox)
@@ -106,11 +129,27 @@ class WeatherApp(QWidget):
                 data = response.json()                  
                 city_name = data["name"]
                 temp = data["main"]["temp"]
-                description = data["weather"][0]["description"]
+                weather = data["weather"][0]["main"]
                 country = data["sys"]["country"]
 
+                icon_path = self.icon_map.get(weather)
+
+                if icon_path:
+                    base_path = os.path.dirname(os.path.abspath(__file__))
+                    full_icon_path = os.path.join(base_path, icon_path)
+
+                    if os.path.exists(full_icon_path):
+                        pixmap = QPixmap(full_icon_path)
+                        self.weather_icon.setPixmap(pixmap.scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                    else:
+                        print("❌ Icon not found:", full_icon_path)
+                        self.weather_icon.clear()
+                else:
+                    print("⚠️ No icon path for weather:", weather)
+                    self.weather_icon.clear()
+
                 self.temperature.setText(f"{temp}°")
-                self.description.setText(description)
+                self.weather.setText(weather)
                 self.city.setText(f"{city_name}, {country}")
             else:
                 self.city.setText("⚠️ City not found")
