@@ -1,5 +1,4 @@
 {
-    "": "icons/sunny.png",
     "Clear": "icons/sun_cloudy.png",
     "Mist": "icons/cloudy.png",
     "Smoke": "icons/cloudy.png",
@@ -18,6 +17,5 @@
     "night": "icons/night.png",
     "night_cloudy": "icons/night_cloudy.png",
     "night_clear": "icons/night_clear.png",
-    "night_rain": "icons/night_rain.png",
-    "full_moon": "icons/full_moon.png"
+    "night_rain": "icons/night_rain.png"
 }
