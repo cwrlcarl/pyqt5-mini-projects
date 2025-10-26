@@ -93,10 +93,10 @@ class WeatherApp(QWidget):
 
     def initUI(self):
         self.textbox.setPlaceholderText("Search for place...")
-        self.textbox.returnPressed.connect(self.get_weather)
+        self.textbox.returnPressed.connect(self.display_weather)
 
         self.search_btn.setCursor(Qt.PointingHandCursor)
-        self.search_btn.clicked.connect(self.get_weather)
+        self.search_btn.clicked.connect(self.display_weather)
 
         hbox = QHBoxLayout()
         hbox.addWidget(self.textbox)
@@ -126,35 +126,58 @@ class WeatherApp(QWidget):
             response = requests.get(base_url)
 
             if response.status_code == 200:
-                data = response.json()                  
-                city_name = data["name"]
-                temp = data["main"]["temp"]
-                weather = data["weather"][0]["main"]
-                country = data["sys"]["country"]
-
-                icon_path = self.icon_map.get(weather)
-
-                if icon_path:
-                    base_path = os.path.dirname(os.path.abspath(__file__))
-                    full_icon_path = os.path.join(base_path, icon_path)
-
-                    if os.path.exists(full_icon_path):
-                        pixmap = QPixmap(full_icon_path)
-                        self.weather_icon.setPixmap(pixmap.scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-                    else:
-                        print("❌ Icon not found:", full_icon_path)
-                        self.weather_icon.clear()
-                else:
-                    print("⚠️ No icon path for weather:", weather)
-                    self.weather_icon.clear()
-
-                self.temperature.setText(f"{temp}°")
-                self.weather.setText(weather)
-                self.city.setText(f"{city_name}, {country}")
+                data = response.json()
+                return {
+                    "city_name": data["name"],
+                    "temp": data["main"]["temp"],
+                    "weather": data["weather"][0]["main"],
+                    "country": data["sys"]["country"] 
+                }
             else:
-                self.city.setText("⚠️ City not found")
-        except requests.exceptions.RequestException:
+                return None
+
+        except requests.exceptions.RequestException as e:
+            print("Error fetching weather: ", e)
             return None
+        
+
+    def display_weather(self):
+        weather_data = self.get_weather()
+        if not weather_data:
+            self.display_error()
+            return
+        
+        city_name = weather_data["city_name"]
+        temp = weather_data["temp"]
+        weather = weather_data["weather"]
+        country = weather_data["country"]
+
+        icon_path = self.icon_map.get(weather)
+        if icon_path:
+            base_path = os.path.dirname(os.path.abspath(__file__))
+            full_icon_path = os.path.join(base_path, icon_path)
+
+            if os.path.exists(full_icon_path):
+                pixmap = QPixmap(full_icon_path)
+                self.weather_icon.setPixmap(pixmap.scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            else:
+                print("❌ Icon not found:", full_icon_path)
+                self.weather_icon.clear()
+                
+        else:
+            print("⚠️ No icon path for weather:", weather)
+            self.weather_icon.clear()
+
+        self.temperature.setText(f"{temp}°")
+        self.weather.setText(weather)
+        self.city.setText(f"{city_name}, {country}")
+
+
+    def display_error(self):
+        self.city.setText("⚠️ City not found")
+        self.weather_icon.clear()
+        self.temperature.clear()
+        self.weather.clear()
         
 
 if __name__ == "__main__":
