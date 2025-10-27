@@ -20,10 +20,13 @@ class WeatherApp(QWidget):
         self.title = QLabel("Weather App", objectName="title")
         self.textbox = QLineEdit()
         self.search_btn = QPushButton("Get Weather")
-        self.weather_icon = QLabel(objectName="icon")
+        self.weather_icon = QLabel()
         self.city = QLabel(objectName="city")
         self.temperature = QLabel(objectName="temperature")
         self.weather = QLabel(objectName="weather")
+        self.humidity = QLabel()
+        self.pressure = QLabel()
+        self.wind_speed = QLabel()
         self.icon_map = self.load_icon()
         self.designUI()
         self.initUI()
@@ -54,11 +57,6 @@ class WeatherApp(QWidget):
             }
                            
             QLabel {
-                font-size: 15px;
-                color: #192142;
-            }
-                           
-            QLabel#icon {
                 font-size: 15px;
                 color: #192142;
             }
@@ -98,17 +96,23 @@ class WeatherApp(QWidget):
         self.search_btn.setCursor(Qt.PointingHandCursor)
         self.search_btn.clicked.connect(self.display_weather)
 
-        hbox = QHBoxLayout()
-        hbox.addWidget(self.textbox)
-        hbox.addWidget(self.search_btn)
+        hbox1 = QHBoxLayout()
+        hbox1.addWidget(self.textbox)
+        hbox1.addWidget(self.search_btn)
+
+        hbox2 = QHBoxLayout()
+        hbox2.addWidget(self.humidity, alignment=Qt.AlignHCenter)
+        hbox2.addWidget(self.pressure, alignment=Qt.AlignHCenter)
+        hbox2.addWidget(self.wind_speed, alignment=Qt.AlignHCenter)
         
         vbox = QVBoxLayout()
         vbox.addWidget(self.title, alignment=Qt.AlignHCenter)
-        vbox.addLayout(hbox)
+        vbox.addLayout(hbox1)
         vbox.addWidget(self.weather_icon, alignment=Qt.AlignHCenter)
         vbox.addWidget(self.temperature, alignment=Qt.AlignHCenter)
         vbox.addWidget(self.city, alignment=Qt.AlignHCenter)
         vbox.addWidget(self.weather, alignment=Qt.AlignHCenter)
+        vbox.addLayout(hbox2)
         vbox.setContentsMargins(40, 15, 40, 15)
 
         self.setLayout(vbox)
@@ -131,7 +135,10 @@ class WeatherApp(QWidget):
                     "city_name": data["name"],
                     "temp": data["main"]["temp"],
                     "weather": data["weather"][0]["main"],
-                    "country": data["sys"]["country"] 
+                    "country": data["sys"]["country"],
+                    "humidity":data["main"]["humidity"],
+                    "pressure": data["main"]["pressure"],
+                    "wind_speed":data["wind"]["speed"]
                 }
             else:
                 return None
@@ -151,6 +158,9 @@ class WeatherApp(QWidget):
         temp = weather_data["temp"]
         weather = weather_data["weather"]
         country = weather_data["country"]
+        humidity = weather_data["humidity"]
+        pressure = weather_data["pressure"]
+        wind_speed = weather_data["wind_speed"]
 
         icon_path = self.icon_map.get(weather)
         if icon_path:
@@ -171,6 +181,9 @@ class WeatherApp(QWidget):
         self.temperature.setText(f"{temp}°")
         self.weather.setText(weather)
         self.city.setText(f"{city_name}, {country}")
+        self.humidity.setText(f"{humidity}%")
+        self.pressure.setText(f"{pressure} hPa")
+        self.wind_speed.setText(f"{wind_speed} m/s")
 
 
     def display_error(self):
