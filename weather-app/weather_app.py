@@ -26,6 +26,9 @@ class WeatherApp(QWidget):
         self.humidity = QLabel(objectName="humidity")
         self.pressure = QLabel(objectName="pressure")
         self.wind_speed = QLabel(objectName="wind_speed")
+        self.humidity_label = QLabel()
+        self.pressure_label = QLabel()
+        self.wind_label = QLabel()
         self.icon_map = self.load_icon()
         self.designUI()
         self.initUI()
@@ -45,6 +48,10 @@ class WeatherApp(QWidget):
 
 
     def designUI(self):
+        self.humidity_label.setStyleSheet("color: #87888c; font-size: 10px;")
+        self.pressure_label.setStyleSheet("color: #87888c; font-size: 10px;")
+        self.wind_label.setStyleSheet("color: #87888c; font-size: 10px;")
+
         self.setStyleSheet("""
             QWidget {
                 background-color: #151617;
@@ -59,9 +66,13 @@ class WeatherApp(QWidget):
                            
             QLabel {
                 background: transparent;
-                font-size: 16px;
+                font-size: 12px;
                 color: #f0f1f7;
                 font-family: MADE Outer Sans;
+            }
+                           
+            QLabel#weather {
+                font-size: 18px;
             }
                            
             QLabel#city {
@@ -79,7 +90,7 @@ class WeatherApp(QWidget):
             }
                            
             QPushButton {
-                padding: 10px 18px;
+                padding: 8px 15px;
                 color: #151617;
                 background-color: #fabb03;
             }
@@ -101,7 +112,12 @@ class WeatherApp(QWidget):
         hbox2.addWidget(self.humidity, alignment=Qt.AlignHCenter)
         hbox2.addWidget(self.pressure, alignment=Qt.AlignHCenter)
         hbox2.addWidget(self.wind_speed, alignment=Qt.AlignHCenter)
-        
+
+        hbox3 = QHBoxLayout()
+        hbox3.addWidget(self.humidity_label, alignment=Qt.AlignHCenter)
+        hbox3.addWidget(self.pressure_label, alignment=Qt.AlignHCenter)
+        hbox3.addWidget(self.wind_label, alignment=Qt.AlignHCenter)
+
         vbox = QVBoxLayout()
         vbox.addWidget(self.city, alignment=Qt.AlignHCenter)
         vbox.addLayout(hbox1)
@@ -112,15 +128,17 @@ class WeatherApp(QWidget):
         vbox.addSpacing(-50)
         vbox.addWidget(self.weather, alignment=Qt.AlignHCenter)
         vbox.addLayout(hbox2)
+        vbox.addSpacing(-47)
+        vbox.addLayout(hbox3)
         vbox.setContentsMargins(40, 15, 40, 15)
 
         self.setLayout(vbox)
 
 
     def get_weather(self):
-        city = self.textbox.text()
+        city = self.textbox.text().strip()
         if not city:
-            return
+            return ""
         
         self.textbox.clear()
         
@@ -149,6 +167,9 @@ class WeatherApp(QWidget):
 
     def display_weather(self):
         weather_data = self.get_weather()
+        if weather_data == "":
+            return
+        
         if not weather_data:
             self.display_error()
             return
@@ -183,6 +204,9 @@ class WeatherApp(QWidget):
         self.humidity.setText(f"{humidity}%")
         self.pressure.setText(f"{pressure} hPa")
         self.wind_speed.setText(f"{wind_speed} m/s")
+        self.humidity_label.setText("Humidity")
+        self.pressure_label.setText("Pressure")
+        self.wind_label.setText("Wind")
 
 
     def display_error(self):
