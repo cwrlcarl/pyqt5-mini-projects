@@ -17,15 +17,15 @@ class WeatherApp(QWidget):
 
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setFixedSize(400, 450)
-        self.city = QLabel("Weather App", objectName="city")
+        self.city = QLabel("Weather App")
         self.textbox = QLineEdit()
         self.search_btn = QPushButton("Get Weather")
+        self.temperature = QLabel()
         self.weather_icon = QLabel()
-        self.temperature = QLabel(objectName="temperature")
-        self.weather = QLabel(objectName="weather")
-        self.humidity = QLabel(objectName="humidity")
-        self.pressure = QLabel(objectName="pressure")
-        self.wind_speed = QLabel(objectName="wind_speed")
+        self.weather = QLabel()
+        self.humidity = QLabel()
+        self.pressure = QLabel()
+        self.wind_speed = QLabel()
         self.humidity_label = QLabel()
         self.pressure_label = QLabel()
         self.wind_label = QLabel()
@@ -48,6 +48,10 @@ class WeatherApp(QWidget):
 
 
     def designUI(self):
+        self.city.setStyleSheet("font-size: 30px;")
+        self.temperature.setStyleSheet("font-size: 95px;")
+        self.weather.setStyleSheet("font-size: 18px;")
+
         self.humidity_label.setStyleSheet("color: #87888c; font-size: 10px;")
         self.pressure_label.setStyleSheet("color: #87888c; font-size: 10px;")
         self.wind_label.setStyleSheet("color: #87888c; font-size: 10px;")
@@ -58,12 +62,6 @@ class WeatherApp(QWidget):
                 margin: 2px 1px;              
             }
                            
-            QLineEdit, QPushButton {
-                font-family: MADE Outer Sans;
-                font-size: 13px;
-                border-radius: 7px;
-            }
-                           
             QLabel {
                 background: transparent;
                 font-size: 12px;
@@ -71,18 +69,12 @@ class WeatherApp(QWidget):
                 font-family: MADE Outer Sans;
             }
                            
-            QLabel#weather {
-                font-size: 18px;
+            QLineEdit, QPushButton {
+                font-family: MADE Outer Sans;
+                font-size: 13px;
+                border-radius: 7px;
             }
-                           
-            QLabel#city {
-                font-size: 30px;
-            }
-                                  
-            QLabel#temperature {
-                font-size: 95px;
-            }
-            
+             
             QLineEdit {
                 padding: 8px;
                 background-color: #1e1f21;
