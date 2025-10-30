@@ -23,13 +23,21 @@ class WeatherApp(QWidget):
         self.temperature = QLabel()
         self.weather_icon = QLabel()
         self.weather = QLabel()
+
+        self.humidity_logo = QLabel()
+        self.pressure_logo = QLabel()
+        self.wind_logo = QLabel()
+
         self.humidity = QLabel()
         self.pressure = QLabel()
         self.wind_speed = QLabel()
+
         self.humidity_label = QLabel()
         self.pressure_label = QLabel()
         self.wind_label = QLabel()
-        self.icon_map = self.load_icon()
+        
+        self.icon_map, self.info_icons = self.load_icon()
+
         self.designUI()
         self.initUI()
 
@@ -40,11 +48,14 @@ class WeatherApp(QWidget):
             json_path = os.path.join(base_path, "weather_icons.json")
 
             with open(json_path, "r") as file:
-                return json.load(file)
+                data = json.load(file)
+                icon_map = data.get("icon_map", {})
+                info_icons = data.get("info_icons", {})
+                return icon_map, info_icons
             
         except (FileNotFoundError, json.JSONDecodeError):
             print("⚠️ weather_icons.json not found")
-            return {}
+            return {}, {}
 
 
     def designUI(self):
@@ -83,8 +94,8 @@ class WeatherApp(QWidget):
                            
             QPushButton {
                 padding: 8px 15px;
-                color: #151617;
-                background-color: #fabb03;
+                color: #f0f1f7;
+                background-color: #1342fe;
             }
         """)
 
@@ -101,14 +112,19 @@ class WeatherApp(QWidget):
         hbox1.addWidget(self.search_btn)
 
         hbox2 = QHBoxLayout()
-        hbox2.addWidget(self.humidity, alignment=Qt.AlignHCenter)
-        hbox2.addWidget(self.pressure, alignment=Qt.AlignHCenter)
-        hbox2.addWidget(self.wind_speed, alignment=Qt.AlignHCenter)
+        hbox2.addWidget(self.humidity_logo, alignment=Qt.AlignHCenter)
+        hbox2.addWidget(self.pressure_logo, alignment=Qt.AlignHCenter)
+        hbox2.addWidget(self.wind_logo, alignment=Qt.AlignHCenter)
 
         hbox3 = QHBoxLayout()
-        hbox3.addWidget(self.humidity_label, alignment=Qt.AlignHCenter)
-        hbox3.addWidget(self.pressure_label, alignment=Qt.AlignHCenter)
-        hbox3.addWidget(self.wind_label, alignment=Qt.AlignHCenter)
+        hbox3.addWidget(self.humidity, alignment=Qt.AlignHCenter)
+        hbox3.addWidget(self.pressure, alignment=Qt.AlignHCenter)
+        hbox3.addWidget(self.wind_speed, alignment=Qt.AlignHCenter)
+
+        hbox4 = QHBoxLayout()
+        hbox4.addWidget(self.humidity_label, alignment=Qt.AlignHCenter)
+        hbox4.addWidget(self.pressure_label, alignment=Qt.AlignHCenter)
+        hbox4.addWidget(self.wind_label, alignment=Qt.AlignHCenter)
 
         vbox = QVBoxLayout()
         vbox.addWidget(self.city, alignment=Qt.AlignHCenter)
@@ -120,8 +136,10 @@ class WeatherApp(QWidget):
         vbox.addSpacing(-50)
         vbox.addWidget(self.weather, alignment=Qt.AlignHCenter)
         vbox.addLayout(hbox2)
-        vbox.addSpacing(-47)
+        vbox.addSpacing(-39)
         vbox.addLayout(hbox3)
+        vbox.addSpacing(-47)
+        vbox.addLayout(hbox4)
         vbox.setContentsMargins(40, 15, 40, 15)
 
         self.setLayout(vbox)
@@ -174,9 +192,10 @@ class WeatherApp(QWidget):
         pressure = weather_data["pressure"]
         wind_speed = weather_data["wind_speed"]
 
+        base_path = os.path.dirname(os.path.abspath(__file__))
+
         icon_path = self.icon_map.get(weather)
         if icon_path:
-            base_path = os.path.dirname(os.path.abspath(__file__))
             full_icon_path = os.path.join(base_path, icon_path)
 
             if os.path.exists(full_icon_path):
@@ -190,12 +209,24 @@ class WeatherApp(QWidget):
             print("⚠️ No icon path for weather:", weather)
             self.weather_icon.clear()
 
+        for icon_label, key in [
+            (self.humidity_logo, "humidity"),
+            (self.pressure_logo, "pressure"),
+            (self.wind_logo, "wind")
+        ]:
+            icon_file = self.info_icons.get(key)
+            if icon_file:
+                full_path = os.path.join(base_path, icon_file)
+                if os.path.exists(full_path):
+                    icon_label.setPixmap(QPixmap(full_path).scaled(18, 18, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+
         self.temperature.setText(f"{temp:.0f}°")
         self.weather.setText(weather)
         self.city.setText(f"{city_name}, {country}")
         self.humidity.setText(f"{humidity}%")
         self.pressure.setText(f"{pressure} hPa")
         self.wind_speed.setText(f"{wind_speed} m/s")
+
         self.humidity_label.setText("Humidity")
         self.pressure_label.setText("Pressure")
         self.wind_label.setText("Wind")
@@ -204,11 +235,13 @@ class WeatherApp(QWidget):
     def display_error(self):
         self.city.setText("⚠️ City not found")
         self.weather_icon.clear()
-        self.temperature.clear()
-        self.weather.clear()
-        self.humidity.clear()
-        self.pressure.clear()
-        self.wind_speed.clear()
+        for label in [
+            self.temperature, self.weather,
+            self.humidity_logo, self.pressure_logo, self.wind_logo,
+            self.humidity, self.pressure, self.wind_speed,
+            self.humidity_label, self.pressure_label, self.wind_label
+        ]:
+            label.clear()
         
 
 if __name__ == "__main__":
