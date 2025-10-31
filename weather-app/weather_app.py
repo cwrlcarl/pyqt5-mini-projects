@@ -61,7 +61,7 @@ class WeatherApp(QWidget):
     def designUI(self):
         self.city.setStyleSheet("font-size: 30px;")
         self.temperature.setStyleSheet("font-size: 95px;")
-        self.weather.setStyleSheet("font-size: 18px;")
+        self.weather.setStyleSheet("font-size: 15px;")
 
         self.humidity_label.setStyleSheet("color: #87888c; font-size: 10px;")
         self.pressure_label.setStyleSheet("color: #87888c; font-size: 10px;")
@@ -129,7 +129,6 @@ class WeatherApp(QWidget):
         vbox = QVBoxLayout()
         vbox.addWidget(self.city, alignment=Qt.AlignHCenter)
         vbox.addLayout(hbox1)
-        vbox.addSpacing(6)
         vbox.addWidget(self.temperature, alignment=Qt.AlignHCenter)
         vbox.addSpacing(-70)
         vbox.addWidget(self.weather_icon, alignment=Qt.AlignHCenter)
