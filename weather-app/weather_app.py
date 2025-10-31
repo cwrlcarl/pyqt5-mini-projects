@@ -69,7 +69,13 @@ class WeatherApp(QWidget):
 
         self.setStyleSheet("""
             QWidget {
-                background-color: #151617;
+                background: qlineargradient(
+                    x1: 0, y1: 0, 
+                    x2: 1, y2: 1, 
+                    stop: 0 #2b2c2e,
+                    stop: 0.4 #151617,
+                    stop: 1 #101114
+                );
                 margin: 2px 1px;              
             }
                            
