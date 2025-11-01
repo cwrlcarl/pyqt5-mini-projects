@@ -60,7 +60,7 @@ class WeatherApp(QWidget):
 
     def designUI(self):
         self.city.setStyleSheet("font-size: 30px;")
-        self.temperature.setStyleSheet("font-size: 95px;")
+        self.temperature.setStyleSheet("font-size: 100px;")
         self.weather.setStyleSheet("font-size: 15px;")
 
         self.humidity_label.setStyleSheet("color: #87888c; font-size: 10px;")
@@ -72,9 +72,9 @@ class WeatherApp(QWidget):
                 background: qlineargradient(
                     x1: 0, y1: 0, 
                     x2: 1, y2: 1, 
-                    stop: 0 #2b2c2e,
-                    stop: 0.4 #151617,
-                    stop: 1 #101114
+                    stop: 0 #202224,
+                    stop: 0.3 #101114,
+                    stop: 1 #151617
                 );
                 margin: 2px 1px;              
             }
@@ -94,14 +94,28 @@ class WeatherApp(QWidget):
              
             QLineEdit {
                 padding: 8px;
-                background-color: #1e1f21;
                 color: #f0f1f7;
+                border: 1px solid #1e1f21;
+                background: qlineargradient(
+                    x1: 0, y1: 0, 
+                    x2: 1, y2: 1, 
+                    stop: 0 #202224,
+                    stop: 0.3 #1e1f21,
+                    stop: 1 #151617
+                );
             }
                            
             QPushButton {
                 padding: 8px 15px;
                 color: #f0f1f7;
-                background-color: #1342fe;
+                border: 1px solid #5a42a8;
+                background: qlineargradient(
+                    x1: 0, y1: 0, 
+                    x2: 1, y2: 1, 
+                    stop: 0.3 #5a42a8,
+                    stop: 0.5 #6e609c,
+                    stop: 1 #291b59
+                );
             }
         """)
 
