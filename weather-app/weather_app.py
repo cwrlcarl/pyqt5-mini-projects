@@ -60,7 +60,7 @@ class WeatherApp(QWidget):
 
     def designUI(self):
         self.city.setStyleSheet("font-size: 30px;")
-        self.temperature.setStyleSheet("font-size: 100px;")
+        self.temperature.setStyleSheet("font-size: 95px;")
         self.weather.setStyleSheet("font-size: 15px;")
 
         self.humidity_label.setStyleSheet("color: #87888c; font-size: 10px;")
@@ -112,9 +112,9 @@ class WeatherApp(QWidget):
                 background: qlineargradient(
                     x1: 0, y1: 0, 
                     x2: 1, y2: 1, 
-                    stop: 0.3 #5a42a8,
-                    stop: 0.5 #6e609c,
-                    stop: 1 #291b59
+                    stop: 0.2 #5a42a8,
+                    stop: 0.4 #6e609c,
+                    stop: 0.9 #35256c
                 );
             }
         """)
@@ -133,18 +133,18 @@ class WeatherApp(QWidget):
 
         hbox2 = QHBoxLayout()
         hbox2.addWidget(self.humidity_logo, alignment=Qt.AlignHCenter)
-        hbox2.addWidget(self.pressure_logo, alignment=Qt.AlignHCenter)
         hbox2.addWidget(self.wind_logo, alignment=Qt.AlignHCenter)
+        hbox2.addWidget(self.pressure_logo, alignment=Qt.AlignHCenter)
 
         hbox3 = QHBoxLayout()
         hbox3.addWidget(self.humidity, alignment=Qt.AlignHCenter)
-        hbox3.addWidget(self.pressure, alignment=Qt.AlignHCenter)
         hbox3.addWidget(self.wind_speed, alignment=Qt.AlignHCenter)
+        hbox3.addWidget(self.pressure, alignment=Qt.AlignHCenter)
 
         hbox4 = QHBoxLayout()
         hbox4.addWidget(self.humidity_label, alignment=Qt.AlignHCenter)
-        hbox4.addWidget(self.pressure_label, alignment=Qt.AlignHCenter)
         hbox4.addWidget(self.wind_label, alignment=Qt.AlignHCenter)
+        hbox4.addWidget(self.pressure_label, alignment=Qt.AlignHCenter)
 
         vbox = QVBoxLayout()
         vbox.addWidget(self.city, alignment=Qt.AlignHCenter)
