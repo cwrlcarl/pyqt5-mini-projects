@@ -21,8 +21,8 @@
         "night_rain": "icons/night_rain.png"
     },
     "info_icons": {
-        "humidity": "icons/humidity.png",
-        "pressure": "icons/pressure.png",
-        "wind": "icons/wind.png"
+        "humidity": "icons/humidity2.png",
+        "pressure": "icons/pressure2.png",
+        "wind": "icons/wind2.png"
     }
 }
