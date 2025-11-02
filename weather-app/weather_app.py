@@ -89,12 +89,12 @@ class WeatherApp(QWidget):
             QLineEdit, QPushButton {
                 font-family: MADE Outer Sans;
                 font-size: 13px;
+                color: #f0f1f7;
                 border-radius: 7px;
             }
              
             QLineEdit {
                 padding: 8px;
-                color: #f0f1f7;
                 border: 1px solid #1e1f21;
                 background: qlineargradient(
                     x1: 0, y1: 0, 
@@ -107,13 +107,12 @@ class WeatherApp(QWidget):
                            
             QPushButton {
                 padding: 8px 15px;
-                color: #f0f1f7;
                 border: 1px solid #5a42a8;
                 background: qlineargradient(
                     x1: 0, y1: 0, 
                     x2: 1, y2: 1, 
                     stop: 0.2 #5a42a8,
-                    stop: 0.4 #6e609c,
+                    stop: 0.4 #796aad,
                     stop: 0.9 #35256c
                 );
             }
