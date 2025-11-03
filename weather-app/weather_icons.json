@@ -14,15 +14,11 @@
         "Tornado": "icons/thunder.png",
         "Drizzle": "icons/cloudy_rainy.png",
         "Squall": "icons/heavyrain_storm.png",
-        "Snow": "icons/heavyrain_storm.png",
-        "night": "icons/night.png",
-        "night_cloudy": "icons/night_cloudy.png",
-        "night_clear": "icons/night_clear.png",
-        "night_rain": "icons/night_rain.png"
+        "Snow": "icons/heavyrain_storm.png"
     },
     "info_icons": {
-        "humidity": "icons/humidity2.png",
-        "pressure": "icons/pressure2.png",
-        "wind": "icons/wind2.png"
+        "humidity": "icons/humidity.png",
+        "pressure": "icons/pressure.png",
+        "wind": "icons/wind.png"
     }
 }
