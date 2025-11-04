@@ -54,7 +54,7 @@ class WeatherApp(QWidget):
                 return icon_map, info_icons
             
         except (FileNotFoundError, json.JSONDecodeError):
-            print("⚠️ weather_icons.json not found")
+            print("'weather_icons.json' not found")
             return {}, {}
 
 
@@ -215,16 +215,14 @@ class WeatherApp(QWidget):
         icon_path = self.icon_map.get(weather)
         if icon_path:
             full_icon_path = os.path.join(base_path, icon_path)
-
             if os.path.exists(full_icon_path):
                 pixmap = QPixmap(full_icon_path)
                 self.weather_icon.setPixmap(pixmap.scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
             else:
-                print("❌ Icon not found:", full_icon_path)
-                self.weather_icon.clear()
-                
+                print("Icon not found: ", full_icon_path)
+                self.weather_icon.clear()   
         else:
-            print("⚠️ No icon path for weather:", weather)
+            print("No icon path for weather: ", weather)
             self.weather_icon.clear()
 
         for icon_label, key in [
@@ -251,7 +249,7 @@ class WeatherApp(QWidget):
 
 
     def display_error(self):
-        self.city.setText("⚠️ City not found")
+        self.city.setText("City not found!")
         self.weather_icon.clear()
         for label in [
             self.temperature, self.weather,
