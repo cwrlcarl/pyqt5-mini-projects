@@ -126,6 +126,9 @@ class WeatherApp(QWidget):
         self.search_btn.setCursor(Qt.PointingHandCursor)
         self.search_btn.clicked.connect(self.display_weather)
 
+        self.weather_icon.setFixedSize(200, 200)
+        self.weather_icon.setAlignment(Qt.AlignHCenter)
+
         hbox1 = QHBoxLayout()
         hbox1.addWidget(self.textbox)
         hbox1.addWidget(self.search_btn)
@@ -151,12 +154,12 @@ class WeatherApp(QWidget):
         vbox.addWidget(self.temperature, alignment=Qt.AlignHCenter)
         vbox.addSpacing(-70)
         vbox.addWidget(self.weather_icon, alignment=Qt.AlignHCenter)
-        vbox.addSpacing(-50)
+        vbox.addSpacing(-90)
         vbox.addWidget(self.weather, alignment=Qt.AlignHCenter)
         vbox.addLayout(hbox2)
-        vbox.addSpacing(-39)
+        vbox.addSpacing(-37)
         vbox.addLayout(hbox3)
-        vbox.addSpacing(-47)
+        vbox.addSpacing(-43)
         vbox.addLayout(hbox4)
         vbox.setContentsMargins(40, 15, 40, 15)
 
