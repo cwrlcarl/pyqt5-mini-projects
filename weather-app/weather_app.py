@@ -107,13 +107,13 @@ class WeatherApp(QWidget):
                            
             QPushButton {
                 padding: 8px 15px;
-                border: 1px solid #5a42a8;
+                border: 1px solid #ffa663;
                 background: qlineargradient(
                     x1: 0, y1: 0, 
                     x2: 1, y2: 1, 
-                    stop: 0.2 #5a42a8,
-                    stop: 0.4 #796aad,
-                    stop: 0.9 #35256c
+                    stop: 0.2 #ffa663,
+                    stop: 0.4 #e8b57d,
+                    stop: 0.9 #c96b0e
                 );
             }
         """)
