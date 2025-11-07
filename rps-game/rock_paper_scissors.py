@@ -2,7 +2,7 @@ import sys
 import random
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
                              QLabel, QLineEdit, QPushButton)
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.Qt import Qt
 
 class RockPaperScissors(QWidget):
@@ -33,16 +33,23 @@ class RockPaperScissors(QWidget):
 
             QLabel {
                 font-size: 30px;
+                padding: 5px;
             }
                            
             QPushButton {
                 padding: 8px 15px;
-                font-size: 15px; 
+                font-size: 15px;
             }
         """)
 
 
     def initUI(self):
+        icons = {
+            "rock": "assets/rock.png",
+            "paper": "assets/paper.png",
+            "scissors": "assets/scissors.png"
+        }
+
         pvc_layout = QHBoxLayout()
         pvc_layout.addWidget(self.player)
         pvc_layout.addWidget(self.versus)
