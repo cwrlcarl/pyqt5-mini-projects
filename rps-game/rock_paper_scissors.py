@@ -1,4 +1,5 @@
 import sys
+import random
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
                              QLabel, QLineEdit, QPushButton)
 from PyQt5.QtGui import QPixmap
@@ -9,17 +10,60 @@ class RockPaperScissors(QWidget):
         super().__init__()
 
         self.setWindowTitle("Rock Paper Scissors")
-        self.setFixedSize(400, 450)
+        self.setFixedSize(450, 400)
+        self.result = QLabel("You Win!")
+        self.player = QLabel("Player")
+        self.versus = QLabel("vs")
+        self.computer = QLabel("Computer")
+        
+        self.rock = QPushButton("Rock")
+        self.paper = QPushButton("Paper")
+        self.scissors = QPushButton("Scissors")
+        self.reset = QPushButton("Reset")
 
         self.designUI()
         self.initUI()
     
 
     def designUI(self):
-        pass
+        self.setStyleSheet("""
+            QLabel, QPushButton {
+                font-family: MADE Outer Sans;
+            }
+
+            QLabel {
+                font-size: 30px;
+            }
+                           
+            QPushButton {
+                padding: 8px 15px;
+                font-size: 15px; 
+            }
+        """)
 
 
     def initUI(self):
+        pvc_layout = QHBoxLayout()
+        pvc_layout.addWidget(self.player)
+        pvc_layout.addWidget(self.versus)
+        pvc_layout.addWidget(self.computer)
+        pvc_layout.setAlignment(Qt.AlignHCenter)
+
+        options = QHBoxLayout()
+        options.addWidget(self.rock)
+        options.addWidget(self.paper)
+        options.addWidget(self.scissors)
+
+        game_layout = QVBoxLayout()
+        game_layout.addWidget(self.result, alignment=Qt.AlignHCenter)
+        game_layout.addLayout(pvc_layout)
+        game_layout.addLayout(options)
+        game_layout.addWidget(self.reset)
+
+        self.setLayout(game_layout)
+
+
+    def play_game():
         pass
 
 
