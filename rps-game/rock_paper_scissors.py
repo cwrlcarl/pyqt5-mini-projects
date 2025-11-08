@@ -4,21 +4,23 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
                              QLabel, QLineEdit, QPushButton)
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.Qt import Qt
+from PyQt5.QtCore import QSize
 
 class RockPaperScissors(QWidget):
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle("Rock Paper Scissors")
-        self.setFixedSize(450, 400)
-        self.result = QLabel("You Win!")
-        self.player = QLabel("Player")
-        self.versus = QLabel("vs")
-        self.computer = QLabel("Computer")
+        self.setFixedSize(400, 450)
         
-        self.rock = QPushButton("Rock")
-        self.paper = QPushButton("Paper")
-        self.scissors = QPushButton("Scissors")
+        self.result = QLabel("You Win!")
+        self.player = QLabel("P")
+        self.versus = QLabel("vs")
+        self.computer = QLabel("C")
+        
+        self.rock = QPushButton()
+        self.paper = QPushButton()
+        self.scissors = QPushButton()
         self.reset = QPushButton("Reset")
 
         self.designUI()
@@ -44,12 +46,6 @@ class RockPaperScissors(QWidget):
 
 
     def initUI(self):
-        icons = {
-            "rock": "assets/rock.png",
-            "paper": "assets/paper.png",
-            "scissors": "assets/scissors.png"
-        }
-
         pvc_layout = QHBoxLayout()
         pvc_layout.addWidget(self.player)
         pvc_layout.addWidget(self.versus)
@@ -61,11 +57,23 @@ class RockPaperScissors(QWidget):
         options.addWidget(self.paper)
         options.addWidget(self.scissors)
 
+        icons = {
+            self.rock: "rps-game/assets/rock.png",
+            self.paper: "rps-game/assets/paper.png",
+            self.scissors: "rps-game/assets/scissors.png"
+        }
+
+        for btn, path in icons.items():
+            btn.setIcon(QIcon(path))
+            btn.setIconSize(QSize(80, 80))
+            btn.setFixedSize(100, 100)
+
         game_layout = QVBoxLayout()
         game_layout.addWidget(self.result, alignment=Qt.AlignHCenter)
         game_layout.addLayout(pvc_layout)
         game_layout.addLayout(options)
         game_layout.addWidget(self.reset)
+        game_layout.setContentsMargins(25, 25, 25, 25)
 
         self.setLayout(game_layout)
 
