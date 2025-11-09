@@ -10,7 +10,7 @@ class RockPaperScissors(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Rock Paper Scissors")
+        self.setWindowFlag(Qt.FramelessWindowHint)
         self.setFixedSize(400, 450)
         
         self.result = QLabel("You Win!")
@@ -51,12 +51,7 @@ class RockPaperScissors(QWidget):
         pvc_layout.addWidget(self.versus)
         pvc_layout.addWidget(self.computer)
         pvc_layout.setAlignment(Qt.AlignHCenter)
-
-        options = QHBoxLayout()
-        options.addWidget(self.rock)
-        options.addWidget(self.paper)
-        options.addWidget(self.scissors)
-
+        
         icons = {
             self.rock: "rps-game/assets/rock.png",
             self.paper: "rps-game/assets/paper.png",
@@ -67,6 +62,11 @@ class RockPaperScissors(QWidget):
             btn.setIcon(QIcon(path))
             btn.setIconSize(QSize(80, 80))
             btn.setFixedSize(100, 100)
+
+        options = QHBoxLayout()
+        options.addWidget(self.rock)
+        options.addWidget(self.paper)
+        options.addWidget(self.scissors)
 
         game_layout = QVBoxLayout()
         game_layout.addWidget(self.result, alignment=Qt.AlignHCenter)
