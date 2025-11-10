@@ -6,31 +6,47 @@ from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.Qt import Qt
 from PyQt5.QtCore import QSize
 
-class RockPaperScissors(QWidget):
+
+class LightningTreeWater(QWidget):
     def __init__(self):
         super().__init__()
 
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setFixedSize(400, 450)
+        self.set_background("pyqt5-mini-projects/rps-game/assets/pixel_bg.png")
         
         self.result = QLabel("You Win!")
         self.player = QLabel("P")
         self.versus = QLabel("vs")
         self.computer = QLabel("C")
         
-        self.rock = QPushButton()
-        self.paper = QPushButton()
-        self.scissors = QPushButton()
+        self.lightning = QPushButton()
+        self.tree = QPushButton()
+        self.water = QPushButton()
         self.reset = QPushButton("Reset")
 
         self.designUI()
         self.initUI()
     
 
+    def set_background(self, image_path):
+        self.bg = QLabel(self)
+        pixmap = QPixmap(image_path)
+        scaled_pix = pixmap.scaled(
+            self.size(),
+            Qt.KeepAspectRatioByExpanding,
+            Qt.SmoothTransformation
+        )
+        self.bg.setPixmap(scaled_pix)
+        self.bg.setGeometry(0, 0, self.width(), self.height())
+        self.bg.setAlignment(Qt.AlignCenter)
+        self.bg.lower()
+
+
     def designUI(self):
         self.setStyleSheet("""
             QLabel, QPushButton {
-                font-family: MADE Outer Sans;
+                font-family: Ari-W9500 Condensed Display;
             }
 
             QLabel {
@@ -53,9 +69,9 @@ class RockPaperScissors(QWidget):
         pvc_layout.setAlignment(Qt.AlignHCenter)
         
         icons = {
-            self.rock: "rps-game/assets/rock.png",
-            self.paper: "rps-game/assets/paper.png",
-            self.scissors: "rps-game/assets/scissors.png"
+            self.lightning: "pyqt5-mini-projects/rps-game/assets/lightning.png",
+            self.tree: "pyqt5-mini-projects/rps-game/assets/tree.png",
+            self.water: "pyqt5-mini-projects/rps-game/assets/water.png"
         }
 
         for btn, path in icons.items():
@@ -64,9 +80,9 @@ class RockPaperScissors(QWidget):
             btn.setFixedSize(100, 100)
 
         options = QHBoxLayout()
-        options.addWidget(self.rock)
-        options.addWidget(self.paper)
-        options.addWidget(self.scissors)
+        options.addWidget(self.lightning)
+        options.addWidget(self.tree)
+        options.addWidget(self.water)
 
         game_layout = QVBoxLayout()
         game_layout.addWidget(self.result, alignment=Qt.AlignHCenter)
@@ -84,6 +100,6 @@ class RockPaperScissors(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    game = RockPaperScissors()
+    game = LightningTreeWater()
     game.show()
     sys.exit(app.exec_())
