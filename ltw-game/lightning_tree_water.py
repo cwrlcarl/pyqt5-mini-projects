@@ -13,7 +13,7 @@ class LightningTreeWater(QWidget):
 
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setFixedSize(400, 450)
-        self.set_background("pyqt5-mini-projects/rps-game/assets/pixel_bg.png")
+        self.set_background("pyqt5-mini-projects/ltw-game/assets/pixel_bg.png")
         
         self.result = QLabel("You Win!")
         self.player = QLabel("P")
@@ -68,16 +68,28 @@ class LightningTreeWater(QWidget):
         pvc_layout.addWidget(self.computer)
         pvc_layout.setAlignment(Qt.AlignHCenter)
         
-        icons = {
-            self.lightning: "pyqt5-mini-projects/rps-game/assets/lightning.png",
-            self.tree: "pyqt5-mini-projects/rps-game/assets/tree.png",
-            self.water: "pyqt5-mini-projects/rps-game/assets/water.png"
+        self.icons = {
+            "lightning": {
+                "button": self.lightning,
+                "path": "pyqt5-mini-projects/ltw-game/assets/lightning.png"
+            },
+            "tree": {
+                "button": self.tree,
+                "path": "pyqt5-mini-projects/ltw-game/assets/tree.png"
+            },
+            "water": {
+                "button": self.water,
+                "path": "pyqt5-mini-projects/ltw-game/assets/water.png"
+            }
         }
 
-        for btn, path in icons.items():
+        for choice, data in self.icons.items():
+            btn = data["button"]
+            path = data["path"]
             btn.setIcon(QIcon(path))
-            btn.setIconSize(QSize(80, 80))
-            btn.setFixedSize(100, 100)
+            btn.setIconSize(QSize(40, 40))
+            btn.setFixedSize(80, 80)
+            btn.clicked.connect(self.play_game)
 
         options = QHBoxLayout()
         options.addWidget(self.lightning)
@@ -94,8 +106,17 @@ class LightningTreeWater(QWidget):
         self.setLayout(game_layout)
 
 
-    def play_game():
-        pass
+    def play_game(self):
+        sender = self.sender()
+        for choice in self.icons:
+            if self.icons[choice]["button"] == sender:
+                pixmap = QPixmap(self.icons[choice]["path"])
+                self.player.setPixmap(pixmap)
+                self.player.setFixedSize(100, 100)
+                self.player.setAlignment(Qt.AlignCenter)
+                self.player.setScaledContents(True)
+
+        computer_choice = random.choice(['rock', 'paper', 'scissors'])
 
 
 if __name__ == "__main__":
