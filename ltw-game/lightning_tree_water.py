@@ -17,6 +17,8 @@ class LightningTreeWater(QWidget):
         
         self.result = QLabel("LightningTreeWater")
         self.description = QLabel("Welcome to my Game!", objectName="description")
+        self.player_score = QLabel("0")
+        self.computer_score = QLabel("0")
         self.player = QLabel()
         self.versus = QLabel("vs")
         self.computer = QLabel()
@@ -67,6 +69,11 @@ class LightningTreeWater(QWidget):
 
 
     def initUI(self):
+        scoreboard = QHBoxLayout()
+        scoreboard.addWidget(self.player_score)
+        scoreboard.addWidget(self.computer_score)
+        scoreboard.setAlignment(Qt.AlignHCenter)
+
         pvc_layout = QHBoxLayout()
         pvc_layout.addWidget(self.player)
         pvc_layout.addWidget(self.versus)
@@ -104,6 +111,7 @@ class LightningTreeWater(QWidget):
         game_layout = QVBoxLayout()
         game_layout.addWidget(self.result, alignment=Qt.AlignHCenter)
         game_layout.addWidget(self.description, alignment=Qt.AlignHCenter)
+        game_layout.addLayout(scoreboard)
         game_layout.addLayout(pvc_layout)
         game_layout.addLayout(options)
         game_layout.addWidget(self.reset)
