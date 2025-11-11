@@ -1,7 +1,7 @@
 import sys
 import random
-from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
-                             QLabel, QLineEdit, QPushButton)
+from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout,
+                             QHBoxLayout, QLabel, QPushButton)
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.Qt import Qt
 from PyQt5.QtCore import QSize
@@ -15,10 +15,11 @@ class LightningTreeWater(QWidget):
         self.setFixedSize(400, 450)
         self.set_background("pyqt5-mini-projects/ltw-game/assets/pixel_bg.png")
         
-        self.result = QLabel("You Win!")
-        self.player = QLabel("P")
+        self.result = QLabel("LightningTreeWater")
+        self.description = QLabel("Welcome to my Game!", objectName="description")
+        self.player = QLabel()
         self.versus = QLabel("vs")
-        self.computer = QLabel("C")
+        self.computer = QLabel()
         
         self.lightning = QPushButton()
         self.tree = QPushButton()
@@ -52,6 +53,10 @@ class LightningTreeWater(QWidget):
             QLabel {
                 font-size: 30px;
                 padding: 5px;
+            }
+                           
+            QLabel#description {
+                font-size: 15px;
             }
                            
             QPushButton {
@@ -98,6 +103,7 @@ class LightningTreeWater(QWidget):
 
         game_layout = QVBoxLayout()
         game_layout.addWidget(self.result, alignment=Qt.AlignHCenter)
+        game_layout.addWidget(self.description, alignment=Qt.AlignHCenter)
         game_layout.addLayout(pvc_layout)
         game_layout.addLayout(options)
         game_layout.addWidget(self.reset)
@@ -108,15 +114,33 @@ class LightningTreeWater(QWidget):
 
     def play_game(self):
         sender = self.sender()
+        computer_choice = random.choice([self.lightning, self.tree, self.water])
+
         for choice in self.icons:
             if self.icons[choice]["button"] == sender:
                 pixmap = QPixmap(self.icons[choice]["path"])
                 self.player.setPixmap(pixmap)
                 self.player.setFixedSize(100, 100)
-                self.player.setAlignment(Qt.AlignCenter)
                 self.player.setScaledContents(True)
 
-        computer_choice = random.choice(['rock', 'paper', 'scissors'])
+            if self.icons[choice]["button"] == computer_choice:
+                pixmap = QPixmap(self.icons[choice]["path"])
+                self.computer.setPixmap(pixmap)
+                self.computer.setFixedSize(100, 100)
+                self.computer.setScaledContents(True)
+
+        win_rules = {
+            self.lightning: self.tree,
+            self.tree: self.water,
+            self.water:  self.lightning
+        }
+
+        if win_rules[sender] == computer_choice:
+            self.result.setText("You Win!")
+        elif win_rules[computer_choice] == sender:
+            self.result.setText("You Lose!")
+        else:
+            self.result.setText("Draw!")
 
 
 if __name__ == "__main__":
