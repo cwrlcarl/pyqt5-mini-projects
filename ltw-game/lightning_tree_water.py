@@ -15,10 +15,11 @@ class LightningTreeWater(QWidget):
         self.setFixedSize(400, 450)
         self.set_background("pyqt5-mini-projects/ltw-game/assets/pixel_bg.png")
         
-        self.result = QLabel("LightningTreeWater")
+        self.result = QLabel("LightningTreeWater", objectName="title")
         self.description = QLabel("Welcome to my Game!", objectName="description")
-        self.player_score = QLabel("0")
-        self.computer_score = QLabel("0")
+        self.player_score = QLabel("You: 0")
+        self.draw = QLabel("Draw: 0")
+        self.computer_score = QLabel("Computer: 0")
         self.player = QLabel()
         self.versus = QLabel("vs")
         self.computer = QLabel()
@@ -53,8 +54,12 @@ class LightningTreeWater(QWidget):
             }
 
             QLabel {
-                font-size: 30px;
+                font-size: 20px;
                 padding: 5px;
+            }
+                           
+            QLabel#title {
+                font-size: 30px;
             }
                            
             QLabel#description {
@@ -71,6 +76,7 @@ class LightningTreeWater(QWidget):
     def initUI(self):
         scoreboard = QHBoxLayout()
         scoreboard.addWidget(self.player_score)
+        scoreboard.addWidget(self.draw)
         scoreboard.addWidget(self.computer_score)
         scoreboard.setAlignment(Qt.AlignHCenter)
 
@@ -111,10 +117,10 @@ class LightningTreeWater(QWidget):
         game_layout = QVBoxLayout()
         game_layout.addWidget(self.result, alignment=Qt.AlignHCenter)
         game_layout.addWidget(self.description, alignment=Qt.AlignHCenter)
-        game_layout.addLayout(scoreboard)
         game_layout.addLayout(pvc_layout)
         game_layout.addLayout(options)
         game_layout.addWidget(self.reset)
+        game_layout.addLayout(scoreboard)
         game_layout.setContentsMargins(25, 25, 25, 25)
 
         self.setLayout(game_layout)
