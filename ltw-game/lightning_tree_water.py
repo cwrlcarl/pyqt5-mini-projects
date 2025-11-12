@@ -17,11 +17,6 @@ class LightningTreeWater(QWidget):
 
         self.player_score = 0
         self.computer_score = 0
-        self.win_rules = {
-            self.lightning: self.tree,
-            self.tree: self.water,
-            self.water:  self.lightning
-        }
         
         self.result = QLabel("LightningTreeWater", objectName="title")
         self.description = QLabel("Welcome to my Game!", objectName="description")
@@ -149,12 +144,18 @@ class LightningTreeWater(QWidget):
 
             if self.icons[choice]["button"] == computer_choice:
                 self.update_icon(self.computer, self.icons[choice]["path"])
+
+        win_rules = {
+            self.lightning: self.tree,
+            self.tree: self.water,
+            self.water:  self.lightning
+        }
         
-        if self.win_rules[player_choice] == computer_choice:
+        if win_rules[player_choice] == computer_choice:
             self.player_score += 1
             self.result.setText("You Win!")
             self.display_player_score.setText(f"Player: {self.player_score}")
-        elif self.win_rules[computer_choice] == player_choice:
+        elif win_rules[computer_choice] == player_choice:
             self.computer_score += 1
             self.result.setText("You Lose!")
             self.display_computer_score.setText(f"Computer: {self.computer_score}")
