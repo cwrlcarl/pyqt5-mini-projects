@@ -17,6 +17,11 @@ class LightningTreeWater(QWidget):
 
         self.player_score = 0
         self.computer_score = 0
+        self.win_rules = {
+            self.lightning: self.tree,
+            self.tree: self.water,
+            self.water:  self.lightning
+        }
         
         self.result = QLabel("LightningTreeWater", objectName="title")
         self.description = QLabel("Welcome to my Game!", objectName="description")
@@ -127,42 +132,34 @@ class LightningTreeWater(QWidget):
         self.setLayout(game_layout)
 
 
+    def update_icon(self, label, path):
+        pixmap = QPixmap(path)
+        label.setPixmap(pixmap)
+        label.setFixedSize(100, 100)
+        label.setScaledContents(True)
+
+
     def play_game(self):
-        sender = self.sender()
+        player_choice = self.sender()
         computer_choice = random.choice([self.lightning, self.tree, self.water])
 
         for choice in self.icons:
-            if self.icons[choice]["button"] == sender:
-                pixmap = QPixmap(self.icons[choice]["path"])
-                self.player.setPixmap(pixmap)
-                self.player.setFixedSize(100, 100)
-                self.player.setScaledContents(True)
+            if self.icons[choice]["button"] == player_choice:
+                self.update_icon(self.player, self.icons[choice]["path"])
 
             if self.icons[choice]["button"] == computer_choice:
-                pixmap = QPixmap(self.icons[choice]["path"])
-                self.computer.setPixmap(pixmap)
-                self.computer.setFixedSize(100, 100)
-                self.computer.setScaledContents(True)
-
-        win_rules = {
-            self.lightning: self.tree,
-            self.tree: self.water,
-            self.water:  self.lightning
-        }
+                self.update_icon(self.computer, self.icons[choice]["path"])
         
-        if win_rules[sender] == computer_choice:
+        if self.win_rules[player_choice] == computer_choice:
             self.player_score += 1
             self.result.setText("You Win!")
             self.display_player_score.setText(f"Player: {self.player_score}")
-        elif win_rules[computer_choice] == sender:
+        elif self.win_rules[computer_choice] == player_choice:
             self.computer_score += 1
             self.result.setText("You Lose!")
             self.display_computer_score.setText(f"Computer: {self.computer_score}")
         else:
             self.result.setText("Draw!")
-
-    def scoreboard(self):
-        pass
 
 
 if __name__ == "__main__":
