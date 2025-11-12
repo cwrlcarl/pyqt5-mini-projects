@@ -14,12 +14,14 @@ class LightningTreeWater(QWidget):
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setFixedSize(400, 450)
         self.set_background("pyqt5-mini-projects/ltw-game/assets/pixel_bg.png")
+
+        self.player_score = 0
+        self.computer_score = 0
         
         self.result = QLabel("LightningTreeWater", objectName="title")
         self.description = QLabel("Welcome to my Game!", objectName="description")
-        self.player_score = QLabel("You: 0")
-        self.draw = QLabel("Draw: 0")
-        self.computer_score = QLabel("Computer: 0")
+        self.display_player_score = QLabel("You: 0")
+        self.display_computer_score = QLabel("Computer: 0")
         self.player = QLabel()
         self.versus = QLabel("vs")
         self.computer = QLabel()
@@ -75,9 +77,8 @@ class LightningTreeWater(QWidget):
 
     def initUI(self):
         scoreboard = QHBoxLayout()
-        scoreboard.addWidget(self.player_score)
-        scoreboard.addWidget(self.draw)
-        scoreboard.addWidget(self.computer_score)
+        scoreboard.addWidget(self.display_player_score)
+        scoreboard.addWidget(self.display_computer_score)
         scoreboard.setAlignment(Qt.AlignHCenter)
 
         pvc_layout = QHBoxLayout()
@@ -148,13 +149,20 @@ class LightningTreeWater(QWidget):
             self.tree: self.water,
             self.water:  self.lightning
         }
-
+        
         if win_rules[sender] == computer_choice:
+            self.player_score += 1
             self.result.setText("You Win!")
+            self.display_player_score.setText(f"Player: {self.player_score}")
         elif win_rules[computer_choice] == sender:
+            self.computer_score += 1
             self.result.setText("You Lose!")
+            self.display_computer_score.setText(f"Computer: {self.computer_score}")
         else:
             self.result.setText("Draw!")
+
+    def scoreboard(self):
+        pass
 
 
 if __name__ == "__main__":
