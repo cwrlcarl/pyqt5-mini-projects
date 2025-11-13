@@ -159,11 +159,12 @@ class LightningTreeWater(QWidget):
 
 
     def reset_game(self):
-        self.display_player_score.clear()
-        self.display_computer_score.clear()
         self.result.setText("LTW Game")
-        self.display_player_score.setText("You: 0")
-        self.display_computer_score.setText("Computer: 0")
+        
+        self.player_score = 0
+        self.computer_score = 0
+        self.display_player_score.setText(f"You: {self.player_score}")
+        self.display_computer_score.setText(f"Computer: {self.computer_score}")
 
 
     def update_icon(self, label, path):
