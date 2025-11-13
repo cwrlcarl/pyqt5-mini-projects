@@ -15,7 +15,7 @@ class LightningTreeWater(QWidget):
         self.setFixedSize(400, 450)
         self.set_background("pyqt5-mini-projects/ltw-game/assets/pixel_bg.png")
         
-        self.result = QLabel("LightningTreeWater", objectName="title")
+        self.result = QLabel("LTW Game", objectName="title")
         self.description = QLabel("Welcome to my Game!", objectName="description")
         self.display_player_score = QLabel("You: 0")
         self.display_computer_score = QLabel("Computer: 0")
@@ -130,6 +130,8 @@ class LightningTreeWater(QWidget):
         game_layout.addLayout(scoreboard)
         game_layout.setContentsMargins(25, 25, 25, 25)
 
+        self.reset.clicked.connect(self.reset_game)
+
         self.setLayout(game_layout)
 
 
@@ -147,7 +149,7 @@ class LightningTreeWater(QWidget):
         if self.win_rules[player_choice] == computer_choice:
             self.player_score += 1
             self.result.setText("You Win!")
-            self.display_player_score.setText(f"Player: {self.player_score}")
+            self.display_player_score.setText(f"You: {self.player_score}")
         elif self.win_rules[computer_choice] == player_choice:
             self.computer_score += 1
             self.result.setText("You Lose!")
@@ -155,8 +157,13 @@ class LightningTreeWater(QWidget):
         else:
             self.result.setText("Draw!")
 
+
     def reset_game(self):
-        pass
+        self.display_player_score.clear()
+        self.display_computer_score.clear()
+        self.result.setText("LTW Game")
+        self.display_player_score.setText("You: 0")
+        self.display_computer_score.setText("Computer: 0")
 
 
     def update_icon(self, label, path):
