@@ -27,7 +27,7 @@ class LightningTreeWater(QWidget):
         self.lightning = QPushButton()
         self.tree = QPushButton()
         self.water = QPushButton()
-        self.reset = QPushButton("Reset")
+        self.reset = QPushButton(objectName="reset")
 
         self.player_score = 0
         self.computer_score = 0
@@ -78,8 +78,12 @@ class LightningTreeWater(QWidget):
                 padding: 8px 15px;
                 font-size: 15px;
             }
+                           
+            QPushButton#reset {
+                background: transparent;
+            }
         """)
-
+            
 
     def initUI(self):
         scoreboard = QHBoxLayout()
@@ -115,22 +119,27 @@ class LightningTreeWater(QWidget):
             btn.setIconSize(QSize(40, 40))
             btn.setFixedSize(80, 80)
             btn.clicked.connect(self.play_game)
+            btn.setCursor(Qt.PointingHandCursor)
 
         options = QHBoxLayout()
         options.addWidget(self.lightning)
         options.addWidget(self.tree)
         options.addWidget(self.water)
 
+        self.reset.setIcon(QIcon("pyqt5-mini-projects/ltw-game/assets/reset_button.png"))
+        self.reset.setIconSize(QSize(142, 38))
+        self.reset.setFixedSize(142, 38)
+        self.reset.setCursor(Qt.PointingHandCursor)
+        self.reset.clicked.connect(self.reset_game)
+
         game_layout = QVBoxLayout()
         game_layout.addWidget(self.result, alignment=Qt.AlignHCenter)
         game_layout.addWidget(self.description, alignment=Qt.AlignHCenter)
         game_layout.addLayout(pvc_layout)
         game_layout.addLayout(options)
-        game_layout.addWidget(self.reset)
+        game_layout.addWidget(self.reset, alignment=Qt.AlignHCenter)
         game_layout.addLayout(scoreboard)
         game_layout.setContentsMargins(25, 25, 25, 25)
-
-        self.reset.clicked.connect(self.reset_game)
 
         self.setLayout(game_layout)
 
@@ -160,7 +169,8 @@ class LightningTreeWater(QWidget):
 
     def reset_game(self):
         self.result.setText("LTW Game")
-        
+        self.player.clear()
+        self.computer.clear()
         self.player_score = 0
         self.computer_score = 0
         self.display_player_score.setText(f"You: {self.player_score}")
