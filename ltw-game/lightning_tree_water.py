@@ -62,15 +62,22 @@ class LightningTreeWater(QWidget):
 
             QLabel {
                 font-size: 20px;
-                color: #b7835b;
+                color: white;
             }
                            
             QLabel#title {
                 font-size: 35px;
+                color: #b7835b;
             }
                                          
             QPushButton {
                 padding: 0px;
+                background-color: white;
+                border: 2px solid black;
+                border-radius: 5px;
+            }
+                           
+            QPushButton#reset {
                 border: none;
                 background: transparent;
             }
@@ -109,7 +116,7 @@ class LightningTreeWater(QWidget):
             path = data["path"]
             btn.setIcon(QIcon(path))
             btn.setIconSize(QSize(40, 40))
-            btn.setFixedSize(80, 80)
+            btn.setFixedSize(70, 70)
             btn.clicked.connect(self.play_game)
             btn.setCursor(Qt.PointingHandCursor)
 
