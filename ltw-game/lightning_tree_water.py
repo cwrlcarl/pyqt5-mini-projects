@@ -96,7 +96,7 @@ class LightningTreeWater(QWidget):
         pvc_layout.addWidget(self.computer)
         pvc_layout.setAlignment(Qt.AlignHCenter)
         
-        self.icons = {
+        self.btn_icons = {
             "lightning": {
                 "button": self.lightning,
                 "path": "pyqt5-mini-projects/ltw-game/assets/lightning.png"
@@ -111,7 +111,15 @@ class LightningTreeWater(QWidget):
             }
         }
 
-        for choice, data in self.icons.items():
+        self.pvc_icons = {
+            "player": "pyqt5-mini-projects/ltw-game/assets/player.png",
+            "computer": "pyqt5-mini-projects/ltw-game/assets/computer.png"
+        }
+
+        self.update_icon(self.player, self.pvc_icons["player"])
+        self.update_icon(self.computer, self.pvc_icons["computer"])
+
+        for choice, data in self.btn_icons.items():
             btn = data["button"]
             path = data["path"]
             btn.setIcon(QIcon(path))
@@ -147,12 +155,12 @@ class LightningTreeWater(QWidget):
         player_choice = self.sender()
         computer_choice = random.choice([self.lightning, self.tree, self.water])
 
-        for choice in self.icons:
-            if self.icons[choice]["button"] == player_choice:
-                self.update_icon(self.player, self.icons[choice]["path"])
+        for choice in self.btn_icons:
+            if self.btn_icons[choice]["button"] == player_choice:
+                self.update_icon(self.player, self.btn_icons[choice]["path"])
 
-            if self.icons[choice]["button"] == computer_choice:
-                self.update_icon(self.computer, self.icons[choice]["path"])
+            if self.btn_icons[choice]["button"] == computer_choice:
+                self.update_icon(self.computer, self.btn_icons[choice]["path"])
         
         if self.win_rules[player_choice] == computer_choice:
             self.player_score += 1
@@ -168,8 +176,8 @@ class LightningTreeWater(QWidget):
 
     def reset_game(self):
         self.result.setText("LTW Game")
-        self.player.clear()
-        self.computer.clear()
+        self.update_icon(self.player, self.pvc_icons["player"])
+        self.update_icon(self.computer, self.pvc_icons["computer"])
         self.player_score = 0
         self.computer_score = 0
         self.display_player_score.setText(f"You: {self.player_score}")
