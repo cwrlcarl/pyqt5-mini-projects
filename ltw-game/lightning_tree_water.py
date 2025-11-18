@@ -20,7 +20,7 @@ class LightningTreeWater(QWidget):
         self.display_computer_score = QLabel("Computer: 0")
 
         self.player = QLabel()
-        self.versus = QLabel("vs")
+        self.versus = QLabel("VS")
         self.computer = QLabel()
         
         self.lightning = QPushButton()
@@ -66,8 +66,7 @@ class LightningTreeWater(QWidget):
             }
                            
             QLabel#title {
-                font-size: 35px;
-                color: #b7835b;
+                font-size: 45px;
             }
                                          
             QPushButton {
@@ -142,6 +141,7 @@ class LightningTreeWater(QWidget):
         game_layout = QVBoxLayout()
         game_layout.addWidget(self.result, alignment=Qt.AlignHCenter)
         game_layout.addLayout(pvc_layout)
+        game_layout.addSpacing(40)
         game_layout.addLayout(options)
         game_layout.addWidget(self.reset, alignment=Qt.AlignHCenter)
         game_layout.addLayout(scoreboard)
@@ -187,7 +187,7 @@ class LightningTreeWater(QWidget):
     def update_icon(self, label, path):
         pixmap = QPixmap(path)
         label.setPixmap(pixmap)
-        label.setFixedSize(100, 100)
+        label.setFixedSize(90, 90)
         label.setScaledContents(True)
 
 
