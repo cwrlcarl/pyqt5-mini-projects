@@ -7,7 +7,7 @@ from PyQt5.Qt import Qt
 from PyQt5.QtCore import QSize
 
 
-class LightningTreeWater(QWidget):
+class RockPaperScissors(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -15,7 +15,7 @@ class LightningTreeWater(QWidget):
         self.setFixedSize(400, 450)
         self.set_background("pyqt5-mini-projects/ltw-game/assets/pixel_bg.jpg")
         
-        self.result = QLabel("LTW Game", objectName="title")
+        self.result = QLabel("RPS Game", objectName="title")
         self.display_player_score = QLabel("You: 0")
         self.display_computer_score = QLabel("Computer: 0")
 
@@ -23,17 +23,17 @@ class LightningTreeWater(QWidget):
         self.versus = QLabel("VS")
         self.computer = QLabel()
         
-        self.lightning = QPushButton()
-        self.tree = QPushButton()
-        self.water = QPushButton()
+        self.rock = QPushButton()
+        self.paper = QPushButton()
+        self.scissors = QPushButton()
         self.reset = QPushButton(objectName="reset")
 
         self.player_score = 0
         self.computer_score = 0
         self.win_rules = {
-            self.lightning: self.tree,
-            self.tree: self.water,
-            self.water:  self.lightning
+            self.rock: self.scissors,
+            self.paper: self.rock,
+            self.scissors: self.paper
         }
 
         self.designUI()
@@ -96,17 +96,17 @@ class LightningTreeWater(QWidget):
         pvc_layout.setAlignment(Qt.AlignHCenter)
         
         self.btn_icons = {
-            "lightning": {
-                "button": self.lightning,
-                "path": "pyqt5-mini-projects/ltw-game/assets/lightning.png"
+            "rock": {
+                "button": self.rock,
+                "path": "pyqt5-mini-projects/ltw-game/assets/rock.png"
             },
-            "tree": {
-                "button": self.tree,
-                "path": "pyqt5-mini-projects/ltw-game/assets/tree.png"
+            "paper": {
+                "button": self.paper,
+                "path": "pyqt5-mini-projects/ltw-game/assets/paper.png"
             },
-            "water": {
-                "button": self.water,
-                "path": "pyqt5-mini-projects/ltw-game/assets/water.png"
+            "scissors": {
+                "button": self.scissors,
+                "path": "pyqt5-mini-projects/ltw-game/assets/scissors.png"
             }
         }
 
@@ -128,9 +128,9 @@ class LightningTreeWater(QWidget):
             btn.setCursor(Qt.PointingHandCursor)
 
         options = QHBoxLayout()
-        options.addWidget(self.lightning)
-        options.addWidget(self.tree)
-        options.addWidget(self.water)
+        options.addWidget(self.rock)
+        options.addWidget(self.paper)
+        options.addWidget(self.scissors)
 
         self.reset.setIcon(QIcon("pyqt5-mini-projects/ltw-game/assets/reset_button.png"))
         self.reset.setIconSize(QSize(142, 38))
@@ -153,7 +153,7 @@ class LightningTreeWater(QWidget):
 
     def play_game(self):
         player_choice = self.sender()
-        computer_choice = random.choice([self.lightning, self.tree, self.water])
+        computer_choice = random.choice([self.rock, self.paper, self.scissors])
 
         for choice in self.btn_icons:
             if self.btn_icons[choice]["button"] == player_choice:
@@ -175,7 +175,7 @@ class LightningTreeWater(QWidget):
 
 
     def reset_game(self):
-        self.result.setText("LTW Game")
+        self.result.setText("RPS Game")
         self.update_icon(self.player, self.pvc_icons["player"])
         self.update_icon(self.computer, self.pvc_icons["computer"])
         self.player_score = 0
@@ -193,6 +193,6 @@ class LightningTreeWater(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    game = LightningTreeWater()
+    game = RockPaperScissors()
     game.show()
     sys.exit(app.exec_())
