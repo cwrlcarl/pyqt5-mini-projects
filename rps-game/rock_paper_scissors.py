@@ -13,7 +13,7 @@ class RockPaperScissors(QWidget):
 
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setFixedSize(400, 450)
-        self.set_background("pyqt5-mini-projects/ltw-game/assets/pixel_bg.jpg")
+        self.set_background("pyqt5-mini-projects/rps-game/assets/pixel_bg.jpg")
         
         self.result = QLabel("RPS Game", objectName="title")
         self.display_player_score = QLabel("You: 0")
@@ -98,21 +98,21 @@ class RockPaperScissors(QWidget):
         self.btn_icons = {
             "rock": {
                 "button": self.rock,
-                "path": "pyqt5-mini-projects/ltw-game/assets/rock.png"
+                "path": "pyqt5-mini-projects/rps-game/assets/rock.png"
             },
             "paper": {
                 "button": self.paper,
-                "path": "pyqt5-mini-projects/ltw-game/assets/paper.png"
+                "path": "pyqt5-mini-projects/rps-game/assets/paper.png"
             },
             "scissors": {
                 "button": self.scissors,
-                "path": "pyqt5-mini-projects/ltw-game/assets/scissors.png"
+                "path": "pyqt5-mini-projects/rps-game/assets/scissors.png"
             }
         }
 
         self.pvc_icons = {
-            "player": "pyqt5-mini-projects/ltw-game/assets/player.png",
-            "computer": "pyqt5-mini-projects/ltw-game/assets/computer.png"
+            "player": "pyqt5-mini-projects/rps-game/assets/player.png",
+            "computer": "pyqt5-mini-projects/rps-game/assets/computer.png"
         }
 
         self.update_icon(self.player, self.pvc_icons["player"])
@@ -132,7 +132,7 @@ class RockPaperScissors(QWidget):
         options.addWidget(self.paper)
         options.addWidget(self.scissors)
 
-        self.reset.setIcon(QIcon("pyqt5-mini-projects/ltw-game/assets/reset_button.png"))
+        self.reset.setIcon(QIcon("pyqt5-mini-projects/rps-game/assets/reset_button.png"))
         self.reset.setIconSize(QSize(142, 38))
         self.reset.setFixedSize(142, 38)
         self.reset.setCursor(Qt.PointingHandCursor)
