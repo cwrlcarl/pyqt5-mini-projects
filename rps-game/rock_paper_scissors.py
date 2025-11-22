@@ -13,9 +13,9 @@ class RockPaperScissors(QWidget):
 
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setFixedSize(400, 450)
-        self.set_background("pyqt5-mini-projects/rps-game/assets/pixel_bg.jpg")
+        self.set_background("pyqt5-mini-projects/rps-game/assets/bg1.png")
         
-        self.result = QLabel("RPS Game", objectName="title")
+        self.title = QLabel(objectName="title")
         self.display_player_score = QLabel("You: 0")
         self.display_computer_score = QLabel("Computer: 0")
 
@@ -66,7 +66,7 @@ class RockPaperScissors(QWidget):
             }
                            
             QLabel#title {
-                font-size: 45px;
+                font-size: 30px;
             }
                                          
             QPushButton {
@@ -84,6 +84,8 @@ class RockPaperScissors(QWidget):
             
 
     def initUI(self):
+        self.update_titlecard()
+        
         scoreboard = QHBoxLayout()
         scoreboard.addWidget(self.display_player_score)
         scoreboard.addWidget(self.display_computer_score)
@@ -139,11 +141,13 @@ class RockPaperScissors(QWidget):
         self.reset.clicked.connect(self.reset_game)
 
         game_layout = QVBoxLayout()
-        game_layout.addWidget(self.result, alignment=Qt.AlignHCenter)
+        game_layout.addWidget(self.title, alignment=Qt.AlignHCenter)
+        game_layout.addSpacing(100)
         game_layout.addLayout(pvc_layout)
         game_layout.addSpacing(40)
         game_layout.addLayout(options)
         game_layout.addWidget(self.reset, alignment=Qt.AlignHCenter)
+        game_layout.addSpacing(-20)
         game_layout.addLayout(scoreboard)
         game_layout.setContentsMargins(25, 25, 25, 25)
         game_layout.setSpacing(30)
@@ -164,18 +168,18 @@ class RockPaperScissors(QWidget):
         
         if self.win_rules[player_choice] == computer_choice:
             self.player_score += 1
-            self.result.setText("You Win!")
+            self.title.setText("You Win!")
             self.display_player_score.setText(f"You: {self.player_score}")
         elif self.win_rules[computer_choice] == player_choice:
             self.computer_score += 1
-            self.result.setText("You Lose!")
+            self.title.setText("You Lose!")
             self.display_computer_score.setText(f"Computer: {self.computer_score}")
         else:
-            self.result.setText("Draw!")
+            self.title.setText("Draw!")
 
 
     def reset_game(self):
-        self.result.setText("RPS Game")
+        self.update_titlecard()
         self.update_icon(self.player, self.pvc_icons["player"])
         self.update_icon(self.computer, self.pvc_icons["computer"])
         self.player_score = 0
@@ -189,6 +193,13 @@ class RockPaperScissors(QWidget):
         label.setPixmap(pixmap)
         label.setFixedSize(90, 90)
         label.setScaledContents(True)
+
+
+    def update_titlecard(self):
+        titlecard = QPixmap("pyqt5-mini-projects/rps-game/assets/rps_titlecard.png")
+        self.title.setPixmap(titlecard)
+        self.title.setFixedSize(161, 95)
+        self.title.setScaledContents(True)
 
 
 if __name__ == "__main__":
