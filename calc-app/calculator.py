@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QGridLayout,
                              QVBoxLayout, QLineEdit, QPushButton)
 from PyQt5.Qt import Qt
 
+
 class Calculator(QWidget):
     def __init__(self):
         super().__init__()
@@ -94,7 +95,8 @@ class Calculator(QWidget):
 
     def result(self):
         try:
-            self.display.setText(str(eval(self.display.text())))
+            expr = self.display.text().replace("÷", "/").replace("×", "*")
+            self.display.setText(str(eval(expr)))
         except Exception:
             self.display.setText("Error")
 
