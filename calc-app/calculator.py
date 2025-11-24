@@ -19,7 +19,7 @@ class Calculator(QWidget):
 
 
     def initUI(self):
-        self.display.setFixedSize(310, 110)
+        self.display.setFixedSize(310, 115)
         self.display.setAlignment(Qt.AlignRight)
         self.display.setPlaceholderText("0")
         self.display.setReadOnly(True)
@@ -47,39 +47,64 @@ class Calculator(QWidget):
         layout = QVBoxLayout()
         layout.addWidget(self.display)
         layout.addLayout(grid)
-        layout.setContentsMargins(20, 15, 20, 15)
+        layout.setContentsMargins(20, 20, 20, 20)
 
         self.setLayout(layout)
 
 
     def designUI(self):
         self.equal_btn.setStyleSheet("""
-            background-color: #dbafd0;
+            border: 1px solid #c2bceb;
+            background: qlineargradient(
+                x1: 0, y1: 0, 
+                x2: 1, y2: 1, 
+                stop: 0.2 #c2bceb,
+                stop: 0.5 #7a72f2,
+                stop: 0.9 #4e39c4
+            );
         """)
         
         self.setStyleSheet("""
             QWidget {
-                background-color: #f5f7f6;
+                background: qlineargradient(
+                    x1: 0, y1: 0, 
+                    x2: 1, y2: 1, 
+                    stop: 0 #202224,
+                    stop: 0.3 #101114,
+                    stop: 1 #1a1a1c
+                );
             }
                            
             QLineEdit, QPushButton {
-                color: #363636;
+                color: #e8e6f0;
                 margin: 1px;
                 padding: 15px;
                 font-family: Joystix;
                 border-radius: 10px;
-                background-color: white;
             }
                                                                       
             QLineEdit {
                 font-size: 50px;
-                border: 2px solid #363636;
-                background-color: #dbafd0;
+                border: 1px solid #303336;
+                background: qlineargradient(
+                    x1: 0, y1: 0, 
+                    x2: 1, y2: 1, 
+                    stop: 0.1 #303336,
+                    stop: 0.4 #1f2123,
+                    stop: 0.8 #181a1b
+                );
             }
                            
             QPushButton {
-                font-size: 25px;            
-                border: 1px solid #363636;
+                font-size: 25px;   
+                border: 1px solid #1e1f21;
+                background: qlineargradient(
+                    x1: 0, y1: 0, 
+                    x2: 1, y2: 1, 
+                    stop: 0 #202224,
+                    stop: 0.3 #1e1f21,
+                    stop: 1 #151617
+                );        
             }
                            
             QPushButton:hover {
