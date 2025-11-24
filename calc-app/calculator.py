@@ -12,6 +12,7 @@ class Calculator(QWidget):
         self.setFixedSize(350, 500)
 
         self.display = QLineEdit()
+        self.is_error = False
 
         self.designUI()
         self.initUI()
@@ -33,7 +34,7 @@ class Calculator(QWidget):
             }
                                                                       
             QLineEdit {
-                font-size: 54px;
+                font-size: 45px;
                 border: 2px solid #363636;
                 background-color: #dbafd0;
             }
@@ -52,6 +53,7 @@ class Calculator(QWidget):
 
 
     def initUI(self):
+        self.display.setFixedSize(310, 110)
         self.display.setAlignment(Qt.AlignRight)
         self.display.setPlaceholderText("0")
         self.display.setReadOnly(True)
@@ -75,7 +77,7 @@ class Calculator(QWidget):
         layout = QVBoxLayout()
         layout.addWidget(self.display)
         layout.addLayout(grid)
-        layout.setContentsMargins(20, 10, 20, 10)
+        layout.setContentsMargins(20, 15, 20, 15)
 
         self.setLayout(layout)
 
@@ -85,12 +87,17 @@ class Calculator(QWidget):
 
         if button == "C":
             self.display.clear()
+            self.is_error = False
         elif button == "<-":
             self.display.backspace()
         elif button == "=":
             self.result()
         else:
-            self.display.insert(button)
+            if self.is_error == False:
+                self.display.insert(button)
+            else:
+                self.display.setText(button)
+                self.is_error = False
 
 
     def result(self):
@@ -98,7 +105,9 @@ class Calculator(QWidget):
             expr = self.display.text().replace("÷", "/").replace("×", "*")
             self.display.setText(str(eval(expr)))
         except Exception:
-            self.display.setText("Error")
+            self.display.setText("(；′⌒`)")
+            self.display.setStyleSheet("font-family: Monocraft")
+            self.is_error = True
 
 
 if __name__ == "__main__":
