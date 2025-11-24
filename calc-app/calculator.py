@@ -85,14 +85,18 @@ class Calculator(QWidget):
         if button == "C":
             self.display.clear()
         elif button == "<-":
-            pass
+            self.display.backspace()
         elif button == "=":
             self.result()
         else:
-            self.display.setText(button)
+            self.display.insert(button)
+
 
     def result(self):
-        self.display.clear()
+        try:
+            self.display.setText(str(eval(self.display.text())))
+        except Exception:
+            self.display.setText("Error")
 
 
 if __name__ == "__main__":
