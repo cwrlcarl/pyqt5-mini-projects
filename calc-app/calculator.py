@@ -54,11 +54,11 @@ class Calculator(QWidget):
 
     def designUI(self):
         self.equal_btn.setStyleSheet("""
-            border: 1px solid #c2bceb;
+            border: 1px solid #b5aee8;
             background: qlineargradient(
                 x1: 0, y1: 0, 
                 x2: 1, y2: 1, 
-                stop: 0.2 #c2bceb,
+                stop: 0.1 #b5aee8,  
                 stop: 0.5 #7a72f2,
                 stop: 0.9 #4e39c4
             );
@@ -122,7 +122,7 @@ class Calculator(QWidget):
             self.display.setText(button)
         elif self.display.text() == "0" and button == ".":
             self.display.insert(button)
-        elif self.display.text() == "0" and button == "0":
+        elif (self.display.text() == button) and (button in ["0", ".", "÷", "×", "-", "+"]):
             pass
         else:
             if button == "C":
