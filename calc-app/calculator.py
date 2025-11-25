@@ -117,37 +117,46 @@ class Calculator(QWidget):
 
     def show_display(self):
         button = self.sender().text()
+        text = self.display.text()
+        operators = "÷×-+%."
+        last_char = text[-1:] if text else ""
 
-        if self.display.text() == "0" and button.isdigit():
-            self.display.setText(button)
-        elif self.display.text() == "0" and button == ".":
-            self.display.insert(button)
-        elif (self.display.text() == button) and (button in ["0", ".", "÷", "×", "-", "+"]):
-            pass
-        else:
-            if button == "C":
+        if button == "C":
+            self.display.clear()
+            self.is_error = False
+        elif button == "<-":
+            if self.is_error:
                 self.display.clear()
                 self.is_error = False
-            elif button == "<-":
-                if self.is_error == False:
-                    self.display.backspace()
-                else:
-                    self.display.clear()
-                    self.is_error = False
-            elif button == "=":
-                self.result()
             else:
-                if self.is_error == False:
-                    self.display.insert(button)
-                else:
-                    self.display.setText(button)
-                    self.is_error = False
+                self.display.backspace()
+        elif button == "=":
+            self.result()
+
+        elif text == "0" and button.isdigit():
+            self.display.setText(button)
+        elif text == "0" and button == ".":
+            self.display.insert(button)
+        elif text == "0" and button == "0":
+            return
+        elif last_char in operators and button in operators:
+            return
+        
+        else:
+            if self.is_error == False:
+                self.display.insert(button)
+            else:
+                self.display.setText(button)
+                self.is_error = False
 
 
     def result(self):
         try:
             expr = self.display.text().replace("÷", "/").replace("×", "*")
-            self.display.setText(str(eval(expr)))
+            if expr.strip() == "":
+                return
+            else:
+                self.display.setText(str(eval(expr)))
         except Exception:
             self.display.setText("(˘︹˘)")
             self.display.setStyleSheet("font-family: Monocraft")
