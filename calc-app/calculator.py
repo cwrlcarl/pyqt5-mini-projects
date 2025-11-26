@@ -1,6 +1,8 @@
 import sys
 from PyQt5.QtWidgets import (QApplication, QWidget, QGridLayout,
                              QVBoxLayout, QLineEdit, QPushButton)
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QSize
 from PyQt5.Qt import Qt
 
 
@@ -9,7 +11,7 @@ class Calculator(QWidget):
         super().__init__()
 
         self.setWindowFlag(Qt.FramelessWindowHint)
-        self.setFixedSize(350, 500)
+        self.setFixedSize(330, 500)
 
         self.display = QLineEdit()
         self.is_error = False
@@ -19,7 +21,7 @@ class Calculator(QWidget):
 
 
     def initUI(self):
-        self.display.setFixedSize(310, 115)
+        self.display.setFixedSize(290, 115)
         self.display.setAlignment(Qt.AlignRight)
         self.display.setPlaceholderText("0")
         self.display.setReadOnly(True)
@@ -36,6 +38,13 @@ class Calculator(QWidget):
 
         for btn, pos in buttons.items():
             button = QPushButton(btn)
+
+            if btn == "<-":
+                self.backspace_btn = button
+                button.setIcon(QIcon("pyqt5-mini-projects/calc-app/assets/arrow-left.png"))
+                button.setIconSize(QSize(25, 30))
+                button.setText("")
+
             if btn == "=":
                 self.equal_btn = button
                 grid.addWidget(self.equal_btn, pos[0], pos[1], pos[2], pos[3])
@@ -58,7 +67,7 @@ class Calculator(QWidget):
             background: qlineargradient(
                 x1: 0, y1: 0, 
                 x2: 1, y2: 1, 
-                stop: 0.1 #b5aee8,  
+                stop: 0.1 #b5aee8, 
                 stop: 0.5 #7a72f2,
                 stop: 0.9 #4e39c4
             );
@@ -108,14 +117,20 @@ class Calculator(QWidget):
             }
                            
             QPushButton:hover {
-                background-color: #f7f7f7;
-                color: #242526;
-                border: 2px solid #363636;
+                border: 1px solid #b5aee8;
+                background: qlineargradient(
+                    x1: 0, y1: 0, 
+                    x2: 1, y2: 1, 
+                    stop: 0.1 #b5aee8,  
+                    stop: 0.5 #7a72f2,
+                    stop: 0.9 #4e39c4
+                );
             }
         """)
 
 
     def show_display(self):
+        sender = self.sender()
         button = self.sender().text()
         text = self.display.text()
         operators = "÷×-+%."
@@ -124,7 +139,7 @@ class Calculator(QWidget):
         if button == "C":
             self.display.clear()
             self.is_error = False
-        elif button == "<-":
+        elif sender == self.backspace_btn:
             if self.is_error:
                 self.display.clear()
                 self.is_error = False
