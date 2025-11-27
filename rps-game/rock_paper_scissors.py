@@ -66,7 +66,7 @@ class RockPaperScissors(QWidget):
             }
                            
             QLabel#title {
-                font-size: 30px;
+                font-size: 35px;
             }
                                          
             QPushButton {
@@ -142,9 +142,9 @@ class RockPaperScissors(QWidget):
 
         game_layout = QVBoxLayout()
         game_layout.addWidget(self.title, alignment=Qt.AlignHCenter)
-        game_layout.addSpacing(100)
+        game_layout.addSpacing(30)
         game_layout.addLayout(pvc_layout)
-        game_layout.addSpacing(40)
+        game_layout.addSpacing(30)
         game_layout.addLayout(options)
         game_layout.addWidget(self.reset, alignment=Qt.AlignHCenter)
         game_layout.addSpacing(-20)
@@ -176,6 +176,8 @@ class RockPaperScissors(QWidget):
             self.display_computer_score.setText(f"Computer: {self.computer_score}")
         else:
             self.title.setText("Draw!")
+
+        self.title.setAlignment(Qt.AlignCenter)
 
 
     def reset_game(self):
