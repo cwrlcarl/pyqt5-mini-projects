@@ -12,7 +12,7 @@ class RockPaperScissors(QWidget):
         super().__init__()
 
         self.setWindowFlag(Qt.FramelessWindowHint)
-        self.setFixedSize(400, 450)
+        self.setFixedSize(380, 450)
         self.set_background("pyqt5-mini-projects/rps-game/assets/bg1.png")
         
         self.title = QLabel(objectName="title")
@@ -66,7 +66,7 @@ class RockPaperScissors(QWidget):
             }
                            
             QLabel#title {
-                font-size: 35px;
+                font-size: 40px;
             }
                                          
             QPushButton {
@@ -133,6 +133,8 @@ class RockPaperScissors(QWidget):
         options.addWidget(self.rock)
         options.addWidget(self.paper)
         options.addWidget(self.scissors)
+        options.setSpacing(0)
+        options.setContentsMargins(0, 0, 0, 0)
 
         self.reset.setIcon(QIcon("pyqt5-mini-projects/rps-game/assets/reset_button.png"))
         self.reset.setIconSize(QSize(142, 38))
@@ -142,12 +144,12 @@ class RockPaperScissors(QWidget):
 
         game_layout = QVBoxLayout()
         game_layout.addWidget(self.title, alignment=Qt.AlignHCenter)
-        game_layout.addSpacing(30)
+        game_layout.addSpacing(26)
         game_layout.addLayout(pvc_layout)
-        game_layout.addSpacing(30)
+        game_layout.addSpacing(26)
         game_layout.addLayout(options)
         game_layout.addWidget(self.reset, alignment=Qt.AlignHCenter)
-        game_layout.addSpacing(-20)
+        game_layout.addSpacing(-15)
         game_layout.addLayout(scoreboard)
         game_layout.setContentsMargins(25, 25, 25, 25)
         game_layout.setSpacing(30)
@@ -168,14 +170,14 @@ class RockPaperScissors(QWidget):
         
         if self.win_rules[player_choice] == computer_choice:
             self.player_score += 1
-            self.title.setText("You Win!")
+            self.title.setText("You\nWin!")
             self.display_player_score.setText(f"You: {self.player_score}")
         elif self.win_rules[computer_choice] == player_choice:
             self.computer_score += 1
-            self.title.setText("You Lose!")
+            self.title.setText("You\nLose!")
             self.display_computer_score.setText(f"Computer: {self.computer_score}")
         else:
-            self.title.setText("Draw!")
+            self.title.setText("It's\na Tie!")
 
         self.title.setAlignment(Qt.AlignCenter)
 
