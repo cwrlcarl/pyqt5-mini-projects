@@ -2,9 +2,7 @@ import sys
 import random
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout,
                              QLineEdit, QLabel, QPushButton)
-from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.Qt import Qt
-from PyQt5.QtCore import QSize
 
 
 class NumberGuessing(QWidget):
@@ -41,20 +39,34 @@ class NumberGuessing(QWidget):
         for widget in widgets:
             layout.addWidget(widget, alignment=Qt.AlignCenter)
 
+        self.guess_btn.clicked.connect(self.show_result)
+        
         self.setLayout(layout)
 
 
     def designUI(self):
         self.setStyleSheet("""
             QLabel {
-                font-family: MADE Outer Sans;
-                font-size: 20px;
+                font-family: Arial;
+                font-size: 25px;
             }
                            
             QLabel#desc {
-                font-size: 10px;        
+                font-size: 15px;        
             }
         """)
+
+
+    def show_result(self):
+        user_input = self.textbox.text()
+        secret_number = str(random.randint(1, 101))
+
+        if user_input > secret_number:
+            self.result.setText("Too high!")
+        elif user_input < secret_number:
+            self.result.setText("Too low!")
+        else:
+            self.result.setText(f"You guessed the number: {secret_number}")
 
 
 if __name__ == "__main__":
