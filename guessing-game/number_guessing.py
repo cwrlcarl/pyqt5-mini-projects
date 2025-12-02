@@ -13,12 +13,15 @@ class NumberGuessing(QWidget):
         self.setFixedSize(400, 430)
 
         self.title = QLabel("Number Guessing")
-        self.description = QLabel("I am thingking of a number between 1-100.\nCan you guess it?",
+        self.description = QLabel("Guess a number from 1-100",
                                   objectName="desc")
         self.textbox = QLineEdit()
         self.guess_btn = QPushButton("Guess")
-        self.result = QLabel("You guessed it!")
-        self.guess = QLabel("Number of guesses: 0")
+        self.reset_btn = QPushButton("Reset")
+        self.result = QLabel("Can you guess it?")
+        self.guess = QLabel("Attempts: 0")
+
+        self.guess_count = 0
 
         self.initUI()
         self.designUI()
@@ -30,6 +33,7 @@ class NumberGuessing(QWidget):
             self.description,
             self.textbox,
             self.guess_btn,
+            self.reset_btn,
             self.result,
             self.guess
         ]
@@ -40,6 +44,7 @@ class NumberGuessing(QWidget):
             layout.addWidget(widget, alignment=Qt.AlignCenter)
 
         self.guess_btn.clicked.connect(self.show_result)
+        self.reset_btn.clicked.connect(self.reset_game)
         
         self.setLayout(layout)
 
@@ -62,11 +67,21 @@ class NumberGuessing(QWidget):
         secret_number = str(random.randint(1, 101))
 
         if user_input > secret_number:
-            self.result.setText("Too high!")
+            self.result.setText("Too high. Try again!")
         elif user_input < secret_number:
-            self.result.setText("Too low!")
+            self.result.setText("Too low. Try again!")
         else:
             self.result.setText(f"You guessed the number: {secret_number}")
+
+        self.guess_count += 1
+        self.guess.setText(f"Attempts: {self.guess_count}")
+
+
+    def reset_game(self):
+        guess_count = 0
+
+        self.result.setText("Can you guess it?")
+        self.guess.setText(f"Attempts: {guess_count}")
 
 
 if __name__ == "__main__":
