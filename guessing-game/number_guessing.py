@@ -12,7 +12,7 @@ class NumberGuessing(QWidget):
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setFixedSize(400, 430)
 
-        self.title = QLabel("Number Guessing")
+        self.title = QLabel("Number Guessing", objectName="game")
         self.description = QLabel("Guess a number from 1-100",
                                   objectName="desc")
         self.textbox = QLineEdit()
@@ -53,11 +53,11 @@ class NumberGuessing(QWidget):
         self.setStyleSheet("""
             QLabel {
                 font-family: Arial;
-                font-size: 25px;
+                font-size: 15px;
             }
                            
-            QLabel#desc {
-                font-size: 15px;        
+            QLabel#game {
+                font-size: 25px;        
             }
         """)
 
@@ -80,6 +80,7 @@ class NumberGuessing(QWidget):
     def reset_game(self):
         guess_count = 0
 
+        self.textbox.clear()
         self.result.setText("Can you guess it?")
         self.guess.setText(f"Attempts: {guess_count}")
 
