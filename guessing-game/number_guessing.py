@@ -51,13 +51,17 @@ class NumberGuessing(QWidget):
 
     def designUI(self):
         self.setStyleSheet("""
-            QLabel {
-                font-family: Arial;
+            QLabel, QPushButton {
+                font-family: FreeSans;
                 font-size: 15px;
             }
                            
             QLabel#game {
                 font-size: 25px;        
+            }
+                           
+            QPushButton {
+                font-family: FreeSans;      
             }
         """)
 
