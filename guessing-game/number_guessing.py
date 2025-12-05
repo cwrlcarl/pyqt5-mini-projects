@@ -21,7 +21,7 @@ class NumberGuessing(QWidget):
         self.result = QLabel("Can you guess it?")
         self.guess = QLabel("Attempts: 0")
 
-        self.secret_number = str(random.randint(1, 101))
+        self.secret_number = random.randint(1, 101)
         self.guess_count = 0
 
         self.initUI()
@@ -69,11 +69,13 @@ class NumberGuessing(QWidget):
 
 
     def show_result(self):
-        user_input = self.textbox.text()
+        user_input = self.textbox.text().strip()
 
         if not user_input or user_input.isalpha():
             self.textbox.clear()
             return
+
+        user_input = int(user_input)
 
         if user_input > self.secret_number:
             self.result.setText("Too high. Try again!")
@@ -90,11 +92,11 @@ class NumberGuessing(QWidget):
 
 
     def reset_game(self):
-        guess_count = 0
+        self.guess_count = 0
 
         self.textbox.clear()
         self.result.setText("Can you guess it?")
-        self.guess.setText(f"Attempts: {guess_count}")
+        self.guess.setText(f"Attempts: {self.guess_count}")
 
 
 if __name__ == "__main__":
