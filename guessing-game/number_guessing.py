@@ -1,6 +1,6 @@
 import sys
 import random
-from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout,
+from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
                              QLineEdit, QLabel, QPushButton)
 from PyQt5.Qt import Qt
 
@@ -29,12 +29,15 @@ class NumberGuessing(QWidget):
 
     
     def initUI(self):
+        btn_layout = QHBoxLayout()
+        btn_layout.addWidget(self.guess_btn)
+        btn_layout.addWidget(self.reset_btn)
+
         widgets = [
             self.title,
             self.description,
             self.textbox,
-            self.guess_btn,
-            self.reset_btn,
+            btn_layout,
             self.result,
             self.guess
         ]
@@ -42,13 +45,18 @@ class NumberGuessing(QWidget):
         layout = QVBoxLayout()
         
         for widget in widgets:
-            layout.addWidget(widget, alignment=Qt.AlignCenter)
+            if widget is not btn_layout:
+                layout.addWidget(widget, alignment=Qt.AlignCenter)
+            else:
+                layout.addLayout(widget)
 
         self.textbox.returnPressed.connect(self.show_result)
         self.guess_btn.clicked.connect(self.show_result)
         self.reset_btn.clicked.connect(self.reset_game)
         
         self.setLayout(layout)
+
+        layout.setContentsMargins(30, 10, 30, 10)
 
 
     def designUI(self):
@@ -84,17 +92,20 @@ class NumberGuessing(QWidget):
             self.result.setText("Too low. Try again!")
             self.textbox.clear()
         else:
+            self.textbox.setReadOnly(True)
             self.result.setText(f"You guessed the number: {self.secret_number}")
-            self.textbox.clear()
+            return
 
         self.guess_count += 1
         self.guess.setText(f"Attempts: {self.guess_count}")
 
 
     def reset_game(self):
+        self.secret_number = random.randint(1, 101)
         self.guess_count = 0
 
         self.textbox.clear()
+        self.textbox.setReadOnly(False)
         self.result.setText("Can you guess it?")
         self.guess.setText(f"Attempts: {self.guess_count}")
 
