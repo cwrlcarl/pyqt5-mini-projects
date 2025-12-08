@@ -21,6 +21,7 @@ class NumberGuessing(QWidget):
         self.guess_btn = QPushButton("Guess")
         self.reset_btn = QPushButton("Reset")
         self.feedback_label = QLabel("Can you guess it?", objectName="feedback")
+        self.hidden_number_label = QLabel("Hidden Number: ?")
         self.attempts_label  = QLabel("Attempts: 0")
 
         self.target_num = None
@@ -40,23 +41,34 @@ class NumberGuessing(QWidget):
         btn_layout.addWidget(self.guess_btn)
         btn_layout.addWidget(self.reset_btn)
 
-        widgets = [
+        game_info_layout = QHBoxLayout()
+        game_info_layout.addWidget(self.hidden_number_label)
+        game_info_layout.addWidget(self.attempts_label)
+        game_info_layout.setAlignment(Qt.AlignHCenter)
+
+        vertical_layout = [
             self.title,
             target_layout,
             self.status_label,
             self.guess_input,
             btn_layout,
             self.feedback_label,
-            self.attempts_label 
+            game_info_layout
         ]
 
-        layout = QVBoxLayout()
+        horizontal_layout = [
+            target_layout,
+            btn_layout,
+            game_info_layout
+        ]
+
+        game_layout = QVBoxLayout()
         
-        for widget in widgets:
-            if widget is not target_layout and widget is not btn_layout:
-                layout.addWidget(widget, alignment=Qt.AlignCenter)
+        for layout in vertical_layout:
+            if layout in horizontal_layout:
+                game_layout.addLayout(layout)
             else:
-                layout.addLayout(widget)
+                game_layout.addWidget(layout, alignment=Qt.AlignCenter)
 
         self.target_input.setPlaceholderText("Enter a target number")
         self.target_input.returnPressed.connect(self.random_number)
@@ -67,9 +79,9 @@ class NumberGuessing(QWidget):
         self.guess_btn.clicked.connect(self.show_result)
         self.reset_btn.clicked.connect(self.reset_game)
         
-        self.setLayout(layout)
+        self.setLayout(game_layout)
 
-        layout.setContentsMargins(30, 10, 30, 10)
+        game_layout.setContentsMargins(30, 10, 30, 10)
 
 
     def designUI(self):
@@ -85,7 +97,7 @@ class NumberGuessing(QWidget):
                            
             QLabel#status, QLabel#feedback {
                 font-size: 12px;
-                color: #3d3d3d;               
+                color: #eb5e5e;               
             }
                            
             QPushButton {
@@ -146,7 +158,8 @@ class NumberGuessing(QWidget):
             self.guess_input.clear()
         else:
             self.guess_input.setReadOnly(True)
-            self.feedback_label.setText(f"You guessed the number: {self.secret_number}")
+            self.feedback_label.setText(f"Congratulations. You guessed the number!")
+            self.hidden_number_label.setText(f"Hidden Number: {self.secret_number}")
             self.attempts_label.setText(f"Attempts: {self.guess_count+1}")
             return
 
