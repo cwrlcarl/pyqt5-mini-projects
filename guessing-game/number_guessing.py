@@ -13,15 +13,15 @@ class NumberGuessing(QWidget):
         self.setFixedSize(400, 430)
 
         self.title = QLabel("Number Guessing", objectName="game")
-        self.target = QLineEdit()
-        self.confirm_btn = QPushButton("Confirm")
-        self.description = QLabel("*Please select your target number*",
-                                  objectName="desc")
-        self.textbox = QLineEdit()
+        self.target_input = QLineEdit()
+        self.confirm_target_btn = QPushButton("Confirm")
+        self.status_label = QLabel("*Please select your target number*",
+                                  objectName="status")
+        self.guess_input = QLineEdit()
         self.guess_btn = QPushButton("Guess")
         self.reset_btn = QPushButton("Reset")
-        self.result = QLabel("Can you guess it?", objectName="result")
-        self.guess = QLabel("Attempts: 0")
+        self.feedback_label = QLabel("Can you guess it?", objectName="feedback")
+        self.attempts_label  = QLabel("Attempts: 0")
 
         self.target_num = None
         self.secret_number = None
@@ -33,8 +33,8 @@ class NumberGuessing(QWidget):
     
     def initUI(self):
         target_layout = QHBoxLayout()
-        target_layout.addWidget(self.target)
-        target_layout.addWidget(self.confirm_btn)
+        target_layout.addWidget(self.target_input)
+        target_layout.addWidget(self.confirm_target_btn)
 
         btn_layout = QHBoxLayout()
         btn_layout.addWidget(self.guess_btn)
@@ -43,11 +43,11 @@ class NumberGuessing(QWidget):
         widgets = [
             self.title,
             target_layout,
-            self.description,
-            self.textbox,
+            self.status_label,
+            self.guess_input,
             btn_layout,
-            self.result,
-            self.guess
+            self.feedback_label,
+            self.attempts_label 
         ]
 
         layout = QVBoxLayout()
@@ -58,12 +58,12 @@ class NumberGuessing(QWidget):
             else:
                 layout.addLayout(widget)
 
-        self.target.setPlaceholderText("Target")
-        self.target.returnPressed.connect(self.random_number)
-        self.confirm_btn.clicked.connect(self.random_number)
+        self.target_input.setPlaceholderText("Enter a target number")
+        self.target_input.returnPressed.connect(self.random_number)
+        self.confirm_target_btn.clicked.connect(self.random_number)
 
-        self.textbox.setPlaceholderText("Enter guess")
-        self.textbox.returnPressed.connect(self.show_result)
+        self.guess_input.setPlaceholderText("Enter your guess")
+        self.guess_input.returnPressed.connect(self.show_result)
         self.guess_btn.clicked.connect(self.show_result)
         self.reset_btn.clicked.connect(self.reset_game)
         
@@ -83,7 +83,7 @@ class NumberGuessing(QWidget):
                 font-size: 25px;        
             }
                            
-            QLabel#desc, QLabel#result {
+            QLabel#status, QLabel#feedback {
                 font-size: 12px;
                 color: #3d3d3d;               
             }
@@ -99,60 +99,60 @@ class NumberGuessing(QWidget):
 
 
     def random_number(self):
-        target = self.target.text().strip()
+        target = self.target_input.text().strip()
 
         if not target or target.isalpha():
-            self.description.setText("*Please enter a positive number*")
+            self.status_label.setText("*Please enter a positive number*")
             self.target.clear()
             return
         else:
-            self.description.setText(f"You enter a target: {target}")
+            self.status_label.setText(f"Guess a number between 1-{target}")
             self.target.setReadOnly(True)
         
         self.target_num = int(target)
         if self.target_num < 1:
-            self.description.setText("*Please enter a positive number*")
-            self.textbox.clear()
+            self.descrstatus_labeliption.setText("*Please enter a positive number*")
+            self.guess_input.clear()
             return
         
         self.secret_number = self.random_number_generator(self.target_num)
 
 
     def show_result(self):
-        if self.target.text().strip() == "":
-            self.result.setText("*Please select a target first*")
-            self.textbox.clear()
+        if self.target_input.text().strip() == "":
+            self.feedback_label.setText("*Please select a target first*")
+            self.guess_input.clear()
             return
 
-        user_input = self.textbox.text().strip()
+        user_input = self.guess_input.text().strip()
 
         if not user_input or user_input.isalpha():
-            self.result.setText("*Please enter a positive number*")
-            self.textbox.clear()
+            self.feedback_label.setText("*Please enter a positive number*")
+            self.guess_input.clear()
             return
 
         user_input = int(user_input)
 
-        if user_input < 1 or user_input > self.target_num:  # Add range check
-            self.result.setText(f"*Please enter a number between 1-{self.target_num}*")
-            self.textbox.clear()
+        if user_input < 1 or user_input > self.target_num:
+            self.feedback_label.setText(f"*Please enter a number between 1-{self.target_num}*")
+            self.guess_input.clear()
             return
 
         if user_input > self.secret_number:
-            self.result.setText("Too high. Try again!")
-            self.textbox.clear()
+            self.feedback_label.setText("Too high. Try again!")
+            self.guess_input.clear()
         elif user_input < self.secret_number:
-            self.result.setText("Too low. Try again!")
-            self.textbox.clear()
+            self.feedback_label.setText("Too low. Try again!")
+            self.guess_input.clear()
         else:
-            self.textbox.setReadOnly(True)
-            self.result.setText(f"You guessed the number: {self.secret_number}")
+            self.guess_input.setReadOnly(True)
+            self.feedback_label.setText(f"You guessed the number: {self.secret_number}")
             self.guess_count += 1
-            self.guess.setText(f"Attempts: {self.guess_count}")
+            self.attempts_label .setText(f"Attempts: {self.guess_count}")
             return
 
         self.guess_count += 1
-        self.guess.setText(f"Attempts: {self.guess_count}")
+        self.attempts_label .setText(f"Attempts: {self.guess_count}")
 
 
     def reset_game(self):
@@ -162,17 +162,17 @@ class NumberGuessing(QWidget):
         self.secret_number = self.random_number_generator(self.target_num)
         self.guess_count = 0
 
-        self.target.clear()
-        self.target.setReadOnly(False)
-        self.description.setText("*Please select your target number*")
-        self.textbox.clear()
-        self.textbox.setReadOnly(False)
-        self.result.setText("Can you guess it?")
-        self.guess.setText(f"Attempts: {self.guess_count}")
+        self.target_input.clear()
+        self.target_input.setReadOnly(False)
+        self.status_label.setText("*Please select your target number*")
+        self.guess_input.clear()
+        self.guess_input.setReadOnly(False)
+        self.feedback_label.setText("Can you guess it?")
+        self.attempts_label .setText(f"Attempts: {self.guess_count}")
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     game = NumberGuessing()
     game.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec_())   
