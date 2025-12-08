@@ -13,14 +13,14 @@ class NumberGuessing(QWidget):
         self.setFixedSize(380, 430)
 
         self.title = QLabel("Number Guessing", objectName="game")
-        self.target_input = QLineEdit(objectName="target_input")
+        self.target_input = QLineEdit()
         self.confirm_target_btn = QPushButton("Confirm", objectName="confirm")
         self.status_label = QLabel("*Please select your target number*",
                                   objectName="status")
-        self.guess_input = QLineEdit()
+        self.guess_input = QLineEdit(objectName="guess_input")
         self.guess_btn = QPushButton("Guess")
-        self.reset_btn = QPushButton("Reset")
-        self.feedback_label = QLabel("Can you guess it?", objectName="feedback")
+        self.reset_btn = QPushButton("Reset", objectName="reset")
+        self.feedback_label = QLabel("You have multiple guesses", objectName="feedback")
         self.hidden_number_label = QLabel("Hidden Number: ?")
         self.attempts_label  = QLabel("Attempts: 0")
 
@@ -78,6 +78,7 @@ class NumberGuessing(QWidget):
         self.confirm_target_btn.setCursor(Qt.PointingHandCursor)
 
         self.guess_input.setPlaceholderText("Enter your guess")
+        self.guess_input.setAlignment(Qt.AlignCenter)
         self.guess_input.returnPressed.connect(self.show_result)
 
         self.guess_btn.clicked.connect(self.show_result)
@@ -110,7 +111,7 @@ class NumberGuessing(QWidget):
                            
             QLabel#status, QLabel#feedback {
                 font-size: 12px;
-                color: #eb5e5e;               
+                color: #f56969;               
             }
                            
             QPushButton {
@@ -124,17 +125,26 @@ class NumberGuessing(QWidget):
                 padding: 7px 25px;               
             }
                            
+            QPushButton#reset {
+                background-color: #f56969;
+            }
+                           
             QLineEdit {
                 color: #222129;
-                font-size: 15px;
+                font-size: 12px;
                 background-color: #eeedf5;
                 border: 1px solid #adacb5;   
                 padding: 11px;
                 border-radius: 5px;
             }
                            
-            QLineEdit#target_input {
-                font-size: 12px;
+            QLineEdit#guess_input {
+                font-size: 15px;
+                border: None;
+                border-bottom: 1px solid #adacb5;
+                background-color: transparent;
+                border-radius: 0;
+                font-weight: Bold;
             }
         """)
 
@@ -147,18 +157,24 @@ class NumberGuessing(QWidget):
         target = self.target_input.text().strip()
 
         if not target or target.isalpha():
-            self.status_label.setText("*Please enter a positive number*")
+            self.status_label.setText("*Please enter a valid number*")
             self.target_input.clear()
             return
-        else:
-            self.status_label.setText(f"Guess a number between 1-{target}")
-            self.target_input.setReadOnly(True)
         
-        self.target_num = int(target)
-        if self.target_num < 1:
-            self.status_label.setText("*Please enter a positive number*")
-            self.guess_input.clear()
+        try:
+            self.target_num = int(target)
+        except ValueError:
+            self.status_label.setText("*Please enter a valid number*")
+            self.target_input.clear()
             return
+        
+        if self.target_num < 2:
+            self.status_label.setText("*Please enter a number greater than 1*")
+            self.target_input.clear()
+            return
+        
+        self.target_input.setReadOnly(True)
+        self.status_label.setText(f"Guess a number between 1-{target}")
         
         self.secret_number = self.random_number_generator(self.target_num)
 
@@ -172,7 +188,7 @@ class NumberGuessing(QWidget):
         user_input = self.guess_input.text().strip()
 
         if not user_input or user_input.isalpha():
-            self.feedback_label.setText("*Please enter a positive number*")
+            self.feedback_label.setText("*Please enter a valid number*")
             self.guess_input.clear()
             return
 
@@ -212,7 +228,8 @@ class NumberGuessing(QWidget):
         self.status_label.setText("*Please select your target number*")
         self.guess_input.clear()
         self.guess_input.setReadOnly(False)
-        self.feedback_label.setText("Can you guess it?")
+        self.feedback_label.setText("You have multiple guesses")
+        self.hidden_number_label.setText("Hidden Number: ?")
         self.attempts_label.setText(f"Attempts: {self.guess_count}")
 
 
