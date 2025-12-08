@@ -103,15 +103,15 @@ class NumberGuessing(QWidget):
 
         if not target or target.isalpha():
             self.status_label.setText("*Please enter a positive number*")
-            self.target.clear()
+            self.target_input.clear()
             return
         else:
             self.status_label.setText(f"Guess a number between 1-{target}")
-            self.target.setReadOnly(True)
+            self.target_input.setReadOnly(True)
         
         self.target_num = int(target)
         if self.target_num < 1:
-            self.descrstatus_labeliption.setText("*Please enter a positive number*")
+            self.status_label.setText("*Please enter a positive number*")
             self.guess_input.clear()
             return
         
@@ -147,12 +147,11 @@ class NumberGuessing(QWidget):
         else:
             self.guess_input.setReadOnly(True)
             self.feedback_label.setText(f"You guessed the number: {self.secret_number}")
-            self.guess_count += 1
-            self.attempts_label .setText(f"Attempts: {self.guess_count}")
+            self.attempts_label.setText(f"Attempts: {self.guess_count+1}")
             return
 
         self.guess_count += 1
-        self.attempts_label .setText(f"Attempts: {self.guess_count}")
+        self.attempts_label.setText(f"Attempts: {self.guess_count}")
 
 
     def reset_game(self):
@@ -168,7 +167,7 @@ class NumberGuessing(QWidget):
         self.guess_input.clear()
         self.guess_input.setReadOnly(False)
         self.feedback_label.setText("Can you guess it?")
-        self.attempts_label .setText(f"Attempts: {self.guess_count}")
+        self.attempts_label.setText(f"Attempts: {self.guess_count}")
 
 
 if __name__ == "__main__":
