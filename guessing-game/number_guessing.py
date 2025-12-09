@@ -77,7 +77,7 @@ class NumberGuessing(QWidget):
         self.confirm_target_btn.clicked.connect(self.random_number)
         self.confirm_target_btn.setCursor(Qt.PointingHandCursor)
 
-        self.guess_input.setPlaceholderText("Enter your guess")
+        self.guess_input.setPlaceholderText("0")
         self.guess_input.setAlignment(Qt.AlignCenter)
         self.guess_input.returnPressed.connect(self.show_result)
 
@@ -95,7 +95,7 @@ class NumberGuessing(QWidget):
     def designUI(self):
         self.setStyleSheet("""
             QWidget {
-                background-color: #eeedf5;  
+                background-color: #eeedf5;
             }
                            
             QLabel, QPushButton {
@@ -106,12 +106,13 @@ class NumberGuessing(QWidget):
             QLabel#game {
                 color: #222129;
                 font-size: 25px;
-                font-weight: Bold;      
+                font-weight: Bold;
+                margin: 10px;
             }
                            
             QLabel#status, QLabel#feedback {
                 font-size: 12px;
-                color: #f56969;               
+                color: #f56969;
             }
                            
             QPushButton {
@@ -122,7 +123,7 @@ class NumberGuessing(QWidget):
             }
                            
             QPushButton#confirm {
-                padding: 7px 25px;               
+                padding: 7px 25px;
             }
                            
             QPushButton#reset {
@@ -131,20 +132,24 @@ class NumberGuessing(QWidget):
                            
             QLineEdit {
                 color: #222129;
+                font-family: Poppins;
                 font-size: 12px;
                 background-color: #eeedf5;
-                border: 1px solid #adacb5;   
-                padding: 11px;
+                border: 1px solid #adacb5;
+                padding: 7px;
                 border-radius: 5px;
             }
                            
             QLineEdit#guess_input {
-                font-size: 15px;
+                font-weight: Bold;
+                font-size: 25px;
                 border: None;
                 border-bottom: 1px solid #adacb5;
                 background-color: transparent;
                 border-radius: 0;
-                font-weight: Bold;
+                padding: 7px;
+                margin-bottom: 15px;
+                max-width: 80px;
             }
         """)
 
@@ -174,6 +179,7 @@ class NumberGuessing(QWidget):
             return
         
         self.target_input.setReadOnly(True)
+        self.confirm_target_btn.setEnabled(False)
         self.status_label.setText(f"Guess a number between 1-{target}")
         
         self.secret_number = self.random_number_generator(self.target_num)
@@ -207,6 +213,7 @@ class NumberGuessing(QWidget):
             self.guess_input.clear()
         else:
             self.guess_input.setReadOnly(True)
+            self.guess_btn.setEnabled(False)
             self.feedback_label.setText(f"Congratulations! You guessed the number.")
             self.hidden_number_label.setText(f"Hidden Number: {self.secret_number}")
             self.attempts_label.setText(f"Attempts: {self.guess_count+1}")
@@ -225,9 +232,11 @@ class NumberGuessing(QWidget):
 
         self.target_input.clear()
         self.target_input.setReadOnly(False)
+        self.confirm_target_btn.setEnabled(True)
         self.status_label.setText("*Please select your target number*")
         self.guess_input.clear()
         self.guess_input.setReadOnly(False)
+        self.guess_btn.setEnabled(True)
         self.feedback_label.setText("You have multiple guesses")
         self.hidden_number_label.setText("Hidden Number: ?")
         self.attempts_label.setText(f"Attempts: {self.guess_count}")
