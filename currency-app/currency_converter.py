@@ -1,7 +1,23 @@
+import os
 import sys
-from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout,
-                             QLineEdit, QLabel, QPushButton)
-from PyQt5.Qt import Qt
+
+import requests
+from dotenv import load_dotenv
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QVBoxLayout,
+    QWidget
+)
+
+
+load_dotenv()
+API_KEY = os.getenv("API_KEY")
+BASE_URL = f"https://api.exchangeratesapi.io/v1/latest"
 
 
 class CurrencyConverter(QWidget):
@@ -13,8 +29,8 @@ class CurrencyConverter(QWidget):
 
         self.header = QLabel("Currency Converter")
         self.currency = QLabel("PHP | USD")
-        self.amount = QLineEdit()
-        self.value = QLineEdit()
+        self.amount_input  = QLineEdit()
+        self.converted_result  = QLineEdit()
         self.convert_btn = QPushButton("Convert")
 
         self.initUI()
@@ -22,8 +38,8 @@ class CurrencyConverter(QWidget):
 
     def initUI(self):
         converter_layout = QHBoxLayout()
-        converter_layout.addWidget(self.amount)
-        converter_layout.addWidget(self.value)
+        converter_layout.addWidget(self.amount_input)
+        converter_layout.addWidget(self.converted_result)
 
         vertical_layout = [
             self.header,
@@ -42,6 +58,32 @@ class CurrencyConverter(QWidget):
 
         self.setContentsMargins(30, 20, 30, 20)
         self.setLayout(main_layout)
+
+
+    def get_exchange_rate(self):
+        base_currency = self.amount_input.text().strip()
+        target_symbol = self.converted_result.text().strip()
+
+        if not base_currency or not target_symbol:
+            return None
+        
+        parameters = {
+            'access_key': API_KEY,
+            'base': base_currency,
+            'symbols': target_symbol
+        }
+        
+        try:
+            response = requests.get(BASE_URL, params=parameters)
+
+            if response.status_code == 200:
+                data = response.json()
+                return data
+            else:
+                return None
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching data: {e}") 
+            return None
 
 
 if __name__ == "__main__":
