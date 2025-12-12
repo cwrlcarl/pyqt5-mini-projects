@@ -65,6 +65,10 @@ class CurrencyConverter(QWidget):
         self.setLayout(main_layout)
 
 
+    def convert_currency(self):
+        pass
+
+
     def get_exchange_rate(self):
         base_currency = self.to_currency.currentText()
         target_symbol = self.from_currency.currentText()
@@ -78,8 +82,25 @@ class CurrencyConverter(QWidget):
             'symbols': target_symbol
         }
         
+        return self.make_api_requests('latest', params)
+        
+
+    def load_currencies(self):
+        params = {'access_key': API_KEY}
+
+        data = self.make_api_requests('symbols', params)
+
+        if data and 'symbols' in data:
+            for currency in data['symbols'].keys():
+                self.from_currency.addItem(currency)
+                self.to_currency.addItem(currency)
+        else:
+            return None
+
+
+    def make_api_requests(self, endpoint, params):
         try:
-            response = requests.get(f"{BASE_URL}/latest", params=params)
+            response = requests.get(f"{BASE_URL}/{endpoint}", params=params)
 
             if response.status_code == 200:
                 data = response.json()
@@ -96,35 +117,6 @@ class CurrencyConverter(QWidget):
         except requests.exceptions.RequestException as e:
             print(f"Error fetching data: {e}") 
             return None
-        
-
-    def load_currencies(self):
-        params = {'access_key': API_KEY}
-
-        try:
-            response = requests.get(f"{BASE_URL}/symbols", params=params)
-
-            if response.status_code == 200:
-                data = response.json()
-
-                if data.get('success') and 'symbols' in data:
-                    for currency in data['symbols'].keys():
-                        self.from_currency.addItem(currency)
-                        self.to_currency.addItem(currency)
-                else:
-                    error_msg = data.get('error', {}).get('info', 'Unknown error')
-                    print(f"API Error: {error_msg}")
-                    return None
-            else:
-                print(f"HTTP Error: {response.status_code}")
-                return None
-        except requests.exceptions.RequestException as e:
-            print(f"Error fetching data: {e}") 
-            return None
-
-    
-    def convert_currency(self):
-        pass
 
 
 if __name__ == "__main__":
