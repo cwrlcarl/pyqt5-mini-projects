@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QApplication,
+    QComboBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -25,36 +26,32 @@ class CurrencyConverter(QWidget):
         super().__init__()
 
         self.setWindowFlag(Qt.FramelessWindowHint)
-        self.setFixedSize(400, 420)
+        self.setFixedSize(410, 420)
 
         self.header = QLabel("Currency Converter")
-        self.currency = QLabel("PHP | USD")
         self.amount_input  = QLineEdit()
-        self.converted_result  = QLineEdit()
+        self.from_currency = QComboBox()
+        self.converted_amount  = QLineEdit()
+        self.to_currency = QComboBox()
         self.convert_btn = QPushButton("Convert")
 
         self.initUI()
 
 
     def initUI(self):
-        converter_layout = QHBoxLayout()
-        converter_layout.addWidget(self.amount_input)
-        converter_layout.addWidget(self.converted_result)
+        from_amount = QHBoxLayout()
+        from_amount.addWidget(self.amount_input)
+        from_amount.addWidget(self.from_currency)
 
-        vertical_layout = [
-            self.header,
-            self.currency,
-            converter_layout,
-            self.convert_btn
-        ]
+        to_amount = QHBoxLayout()
+        to_amount.addWidget(self.converted_amount)
+        to_amount.addWidget(self.to_currency)
 
         main_layout = QVBoxLayout()
-        
-        for layout in vertical_layout:
-            if layout is not converter_layout:
-                main_layout.addWidget(layout)
-            else:
-                main_layout.addLayout(layout)
+        main_layout.addWidget(self.header)
+        main_layout.addLayout(from_amount)
+        main_layout.addLayout(to_amount)
+        main_layout.addWidget(self.convert_btn)
 
         self.setContentsMargins(30, 20, 30, 20)
         self.setLayout(main_layout)
@@ -62,7 +59,7 @@ class CurrencyConverter(QWidget):
 
     def get_exchange_rate(self):
         base_currency = self.amount_input.text().strip()
-        target_symbol = self.converted_result.text().strip()
+        target_symbol = self.converted_amount.text().strip()
 
         if not base_currency or not target_symbol:
             return None
