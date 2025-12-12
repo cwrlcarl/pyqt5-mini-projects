@@ -78,8 +78,15 @@ class CurrencyConverter(QWidget):
 
             if response.status_code == 200:
                 data = response.json()
-                return data
+
+                if data.get('success'):
+                    return data
+                else:
+                    error_msg = data.get('error', {}).get('info', 'Unknown error')
+                    print(f"API Error: {error_msg}")
+                    return None
             else:
+                print(f"HTTP Error: {response.status_code}")
                 return None
         except requests.exceptions.RequestException as e:
             print(f"Error fetching data: {e}") 
