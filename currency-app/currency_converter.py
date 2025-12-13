@@ -114,12 +114,20 @@ class CurrencyConverter(QWidget):
 
 
     def convert_currency(self):
-        pass
+        data = self.get_exchange_rate()
+
+        original_amount = self.amount_input.text().strip()
+
+        if not original_amount or original_amount.isalpha():
+            self.amount_input.clear()
+            return None
+
+        self.converted_amount.setText(original_amount)
 
 
     def get_exchange_rate(self):
-        base_currency = self.to_currency.currentText()
-        target_symbol = self.from_currency.currentText()
+        base_currency = self.from_currency.currentText()
+        target_symbol = self.to_currency.currentText()
 
         if not base_currency or not target_symbol:
             return None
