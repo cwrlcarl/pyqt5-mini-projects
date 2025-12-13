@@ -26,9 +26,9 @@ class CurrencyConverter(QWidget):
         super().__init__()
 
         self.setWindowFlag(Qt.FramelessWindowHint)
-        self.setFixedSize(410, 420)
+        self.setFixedSize(400, 420)
 
-        self.header = QLabel("Currency Converter")
+        self.header = QLabel("Currency Converter", objectName="header")
         self.amount_label = QLabel("Amount")
         self.amount_input  = QLineEdit()
         self.from_currency = QComboBox()
@@ -38,12 +38,20 @@ class CurrencyConverter(QWidget):
         self.convert_btn = QPushButton("Convert")
 
         self.initUI()
+        self.designUI()
         self.load_currencies()
 
 
     def initUI(self):
+        self.amount_input.setPlaceholderText("0")
+        self.converted_amount.setPlaceholderText("0")
+        self.converted_amount.setReadOnly(True)
+
         self.convert_btn.clicked.connect(self.convert_currency)
         self.convert_btn.setCursor(Qt.PointingHandCursor)
+
+        self.from_currency.setCursor(Qt.PointingHandCursor)
+        self.to_currency.setCursor(Qt.PointingHandCursor)
 
         from_amount = QHBoxLayout()
         from_amount.addWidget(self.amount_input)
@@ -65,6 +73,46 @@ class CurrencyConverter(QWidget):
         self.setLayout(main_layout)
 
 
+    def designUI(self):
+        self.setStyleSheet("""
+            QWidget {
+                font-size: 15px;
+                font-family: Poppins;        
+                background-color: #f5f6f7;
+            }
+                           
+            QLabel#header {
+                font-size: 25px;
+                font-weight: Bold;
+            }
+                           
+            QLineEdit {
+                font-size: 25px;
+                padding: 5px;
+                border: 1px solid #adacb5;
+                border-radius: 5px;
+            }
+                           
+            QComboBox {
+                
+            }
+                           
+            QPushButton {
+                color: #f5f6f7;
+                border-radius: 21px;
+                padding: 10px;
+                margin-top: 20px;
+                background: qlineargradient(
+                    x1: 0, y1: 0, 
+                    x2: 1, y2: 1, 
+                    stop: 0.2 #63aeff,
+                    stop: 0.4 #8ac7ed,
+                    stop: 0.9 #0e4cc9
+                );
+            }
+        """)
+
+
     def convert_currency(self):
         pass
 
@@ -82,13 +130,13 @@ class CurrencyConverter(QWidget):
             'symbols': target_symbol
         }
         
-        return self.make_api_requests('latest', params)
+        return self.make_api_request('latest', params)
         
 
     def load_currencies(self):
         params = {'access_key': API_KEY}
 
-        data = self.make_api_requests('symbols', params)
+        data = self.make_api_request('symbols', params)
 
         if data and 'symbols' in data:
             for currency in data['symbols'].keys():
@@ -98,7 +146,7 @@ class CurrencyConverter(QWidget):
             return None
 
 
-    def make_api_requests(self, endpoint, params):
+    def make_api_request(self, endpoint, params):
         try:
             response = requests.get(f"{BASE_URL}/{endpoint}", params=params)
 
