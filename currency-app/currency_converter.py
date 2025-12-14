@@ -15,7 +15,6 @@ from PyQt5.QtWidgets import (
     QWidget
 )
 
-
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
 BASE_URL = "https://api.exchangeratesapi.io/v1"
@@ -53,22 +52,37 @@ class CurrencyConverter(QWidget):
         self.from_currency.setCursor(Qt.PointingHandCursor)
         self.to_currency.setCursor(Qt.PointingHandCursor)
 
-        from_amount_container = QWidget(objectName="from")
+        from_amount_back_container = QWidget(objectName="from")
+        from_amount_back_layout = QVBoxLayout()
+
+        from_amount_container = QWidget(objectName="from_inner")
         from_amount_layout = QHBoxLayout()
         from_amount_layout.addWidget(self.amount_input)
         from_amount_layout.addWidget(self.from_currency)
         from_amount_container.setLayout(from_amount_layout)
 
-        to_amount_container = QWidget(objectName="to")
+        from_amount_back_layout.addWidget(from_amount_container)
+        from_amount_back_container.setLayout(from_amount_back_layout)
+        from_amount_back_container.setFixedHeight(80)
+
+
+        to_amount_back_container = QWidget(objectName="to")
+        to_amount_back_layout = QVBoxLayout()
+
+        to_amount_container = QWidget(objectName="to_inner")
         to_amount_layout = QHBoxLayout()
         to_amount_layout.addWidget(self.converted_amount)
         to_amount_layout.addWidget(self.to_currency)
         to_amount_container.setLayout(to_amount_layout)
 
+        to_amount_back_layout.addWidget(to_amount_container)
+        to_amount_back_container.setLayout(to_amount_back_layout)
+        to_amount_back_container.setFixedHeight(80)
+
         widgets = [
             self.header, self.amount_label,
-            from_amount_container, self.converted_to_label,
-            to_amount_container, self.convert_btn
+            from_amount_back_container, self.converted_to_label,
+            to_amount_back_container, self.convert_btn
         ]
 
         main_layout = QVBoxLayout()
@@ -84,11 +98,21 @@ class CurrencyConverter(QWidget):
             QWidget{
                 font-size: 15px;
                 font-family: Poppins;        
-                background-color: #f5f6f7;
+                background-color: white;
             }
                            
             QWidget#from, QWidget#to {
-                background-color: white;
+                background-color: #f5f6f7;
+                border-radius: 20%;
+                border: 1px solid #f2f2f2;
+            }
+                           
+            QWidget#from_inner, QWidget#to_inner {
+                border-radius: 16%;
+            }
+                           
+            QLabel {
+                background-color: transparent;
             }
                            
             QLabel#header {
@@ -99,8 +123,9 @@ class CurrencyConverter(QWidget):
             QLineEdit {
                 font-size: 25px;
                 padding: 5px;
-                border: 1px solid #adacb5;
+                border: None;
                 border-radius: 5px;
+                background-color: transparent;
             }
                            
             QComboBox {
