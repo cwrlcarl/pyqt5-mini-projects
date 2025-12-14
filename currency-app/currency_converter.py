@@ -27,7 +27,7 @@ class CurrencyConverter(QWidget):
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setFixedSize(400, 420)
 
-        self.header = QLabel("Currency Converter", objectName="header")
+        self.header = QLabel("Currency Converter💲", objectName="header")
         self.amount_label = QLabel("Amount")
         self.amount_input  = QLineEdit()
         self.from_currency = QComboBox()
@@ -129,7 +129,19 @@ class CurrencyConverter(QWidget):
             }
                            
             QComboBox {
-                
+                border-radius: 5px;
+                padding-left: 8px;
+                background-color: #f5f6f7;
+                border: 1px solid #f2f2f2;
+                width: 35px;
+            }
+                           
+            QComboBox::drop-down {
+                image: url(pyqt5-mini-projects/currency-app/assets/down-arrow (1).png);
+                width: 13px;
+                height: 13px;
+                padding-top: 7px;
+                padding-right: 7px;
             }
                            
             QPushButton {
