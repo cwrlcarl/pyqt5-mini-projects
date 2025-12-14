@@ -53,32 +53,42 @@ class CurrencyConverter(QWidget):
         self.from_currency.setCursor(Qt.PointingHandCursor)
         self.to_currency.setCursor(Qt.PointingHandCursor)
 
-        from_amount = QHBoxLayout()
-        from_amount.addWidget(self.amount_input)
-        from_amount.addWidget(self.from_currency)
+        from_amount_container = QWidget(objectName="from")
+        from_amount_layout = QHBoxLayout()
+        from_amount_layout.addWidget(self.amount_input)
+        from_amount_layout.addWidget(self.from_currency)
+        from_amount_container.setLayout(from_amount_layout)
 
-        to_amount = QHBoxLayout()
-        to_amount.addWidget(self.converted_amount)
-        to_amount.addWidget(self.to_currency)
+        to_amount_container = QWidget(objectName="to")
+        to_amount_layout = QHBoxLayout()
+        to_amount_layout.addWidget(self.converted_amount)
+        to_amount_layout.addWidget(self.to_currency)
+        to_amount_container.setLayout(to_amount_layout)
+
+        widgets = [
+            self.header, self.amount_label,
+            from_amount_container, self.converted_to_label,
+            to_amount_container, self.convert_btn
+        ]
 
         main_layout = QVBoxLayout()
-        main_layout.addWidget(self.header)
-        main_layout.addWidget(self.amount_label)
-        main_layout.addLayout(from_amount)
-        main_layout.addWidget(self.converted_to_label)
-        main_layout.addLayout(to_amount)
-        main_layout.addWidget(self.convert_btn)
+        for widget in widgets:
+            main_layout.addWidget(widget)
 
         self.setContentsMargins(30, 20, 30, 20)
         self.setLayout(main_layout)
 
 
     def designUI(self):
-        self.setStyleSheet("""
-            QWidget {
+        self.setStyleSheet("""                           
+            QWidget{
                 font-size: 15px;
                 font-family: Poppins;        
                 background-color: #f5f6f7;
+            }
+                           
+            QWidget#from, QWidget#to {
+                background-color: white;
             }
                            
             QLabel#header {
