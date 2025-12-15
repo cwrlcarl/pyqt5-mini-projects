@@ -25,15 +25,16 @@ class CurrencyConverter(QWidget):
         super().__init__()
 
         self.setWindowFlag(Qt.FramelessWindowHint)
-        self.setFixedSize(400, 420)
+        self.setFixedSize(400, 440)
 
         self.header = QLabel("Currency Converter💲", objectName="header")
-        self.amount_label = QLabel("Amount")
+        self.amount_label = QLabel("Amount", objectName="amount")
         self.amount_input  = QLineEdit()
         self.from_currency = QComboBox()
-        self.converted_to_label = QLabel("Converted to")
+        self.converted_to_label = QLabel("Converted to", objectName="converted")
         self.converted_amount  = QLineEdit()
         self.to_currency = QComboBox()
+        self.exchange_rate_label = QLabel("1 EUR = 69.20 PHP", objectName="rate")
         self.convert_btn = QPushButton("Convert")
 
         self.initUI()
@@ -43,6 +44,7 @@ class CurrencyConverter(QWidget):
 
     def initUI(self):
         self.amount_input.setPlaceholderText("0")
+        
         self.converted_amount.setPlaceholderText("0")
         self.converted_amount.setReadOnly(True)
 
@@ -63,8 +65,7 @@ class CurrencyConverter(QWidget):
 
         from_amount_back_layout.addWidget(from_amount_container)
         from_amount_back_container.setLayout(from_amount_back_layout)
-        from_amount_back_container.setFixedHeight(80)
-
+        
 
         to_amount_back_container = QWidget(objectName="to")
         to_amount_back_layout = QVBoxLayout()
@@ -77,12 +78,11 @@ class CurrencyConverter(QWidget):
 
         to_amount_back_layout.addWidget(to_amount_container)
         to_amount_back_container.setLayout(to_amount_back_layout)
-        to_amount_back_container.setFixedHeight(80)
-
+        
         widgets = [
-            self.header, self.amount_label,
-            from_amount_back_container, self.converted_to_label,
-            to_amount_back_container, self.convert_btn
+            self.header, self.amount_label, from_amount_back_container,
+            self.converted_to_label, to_amount_back_container,
+            self.exchange_rate_label, self.convert_btn
         ]
 
         main_layout = QVBoxLayout()
@@ -97,7 +97,8 @@ class CurrencyConverter(QWidget):
         self.setStyleSheet("""                           
             QWidget{
                 font-size: 15px;
-                font-family: Poppins;        
+                font-family: Poppins;
+                color: #1f1f21;     
                 background-color: white;
             }
                            
@@ -118,6 +119,16 @@ class CurrencyConverter(QWidget):
             QLabel#header {
                 font-size: 25px;
                 font-weight: Bold;
+            }
+                           
+            QLabel#amount, QLabel#converted {
+                font-size: 13px;
+                color: #5f5f63;
+            }
+                           
+            QLabel#rate {
+                font-weight: Bold;
+                padding-top: 10px;
             }
                            
             QLineEdit {
@@ -148,7 +159,7 @@ class CurrencyConverter(QWidget):
                 color: #f5f6f7;
                 border-radius: 21px;
                 padding: 10px;
-                margin-top: 20px;
+                margin-top: 5px;
                 background: qlineargradient(
                     x1: 0, y1: 0, 
                     x2: 1, y2: 1, 
@@ -163,13 +174,14 @@ class CurrencyConverter(QWidget):
     def convert_currency(self):
         original_amount = self.amount_input.text().strip()
 
-        if not original_amount or original_amount.isalpha():
+        if not original_amount.isdigit():
             self.amount_input.clear()
             return None
         
         original_amount = float(original_amount)
 
         data = self.get_exchange_rate()
+        base_currency = self.from_currency.currentText()
         currency_code = self.to_currency.currentText()
 
         if data and 'rates' in data:
@@ -177,6 +189,7 @@ class CurrencyConverter(QWidget):
             result = original_amount * rate
             result = f"{result:.2f}"
             self.converted_amount.setText(result)
+            self.exchange_rate_label.setText(f"1 {base_currency} = {rate:.2f} {currency_code}")
         else:
             return None
 
@@ -206,6 +219,9 @@ class CurrencyConverter(QWidget):
             for currency in data['symbols'].keys():
                 self.from_currency.addItem(currency)
                 self.to_currency.addItem(currency)
+
+            self.from_currency.setCurrentText("EUR")
+            self.to_currency.setCurrentText("PHP")
         else:
             return None
 
