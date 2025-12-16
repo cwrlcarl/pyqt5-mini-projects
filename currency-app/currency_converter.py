@@ -44,40 +44,27 @@ class CurrencyConverter(QWidget):
 
     def initUI(self):
         self.amount_input.setPlaceholderText("0")
-        
         self.converted_amount.setPlaceholderText("0")
         self.converted_amount.setReadOnly(True)
 
+        self.amount_input.returnPressed.connect(self.convert_currency)
         self.convert_btn.clicked.connect(self.convert_currency)
         self.convert_btn.setCursor(Qt.PointingHandCursor)
 
         self.from_currency.setCursor(Qt.PointingHandCursor)
         self.to_currency.setCursor(Qt.PointingHandCursor)
 
-        from_amount_back_container = QWidget(objectName="from")
-        from_amount_back_layout = QVBoxLayout()
-
-        from_amount_container = QWidget(objectName="from_inner")
-        from_amount_layout = QHBoxLayout()
-        from_amount_layout.addWidget(self.amount_input)
-        from_amount_layout.addWidget(self.from_currency)
-        from_amount_container.setLayout(from_amount_layout)
-
-        from_amount_back_layout.addWidget(from_amount_container)
-        from_amount_back_container.setLayout(from_amount_back_layout)
+        from_amount_back_container = self.create_input_container(
+            self.amount_input,
+            self.from_currency,
+            "from", "from_inner"
+        )
         
-
-        to_amount_back_container = QWidget(objectName="to")
-        to_amount_back_layout = QVBoxLayout()
-
-        to_amount_container = QWidget(objectName="to_inner")
-        to_amount_layout = QHBoxLayout()
-        to_amount_layout.addWidget(self.converted_amount)
-        to_amount_layout.addWidget(self.to_currency)
-        to_amount_container.setLayout(to_amount_layout)
-
-        to_amount_back_layout.addWidget(to_amount_container)
-        to_amount_back_container.setLayout(to_amount_back_layout)
+        to_amount_back_container = self.create_input_container(
+            self.converted_amount,
+            self.to_currency,
+            "to", "to_inner"
+        )
         
         widgets = [
             self.header, self.amount_label, from_amount_back_container,
@@ -245,6 +232,22 @@ class CurrencyConverter(QWidget):
         except requests.exceptions.RequestException as e:
             print(f"Error fetching data: {e}") 
             return None
+        
+
+    def create_input_container(self, widget1, widget2, object_name1=None, object_name2=None):
+        back_container = QWidget(objectName=object_name1) if object_name1 else QWidget()
+        back_layout = QVBoxLayout()
+
+        inner_container = QWidget(objectName=object_name2) if object_name2 else QWidget()
+        inner_layout = QHBoxLayout()
+        inner_layout.addWidget(widget1)
+        inner_layout.addWidget(widget2)
+        inner_container.setLayout(inner_layout)
+
+        back_layout.addWidget(inner_container)
+        back_container.setLayout(back_layout)
+
+        return back_container
 
 
 if __name__ == "__main__":
