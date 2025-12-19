@@ -39,6 +39,7 @@ class PokemonViewer(QWidget):
         self.header.setPixmap(pokedex_logo.scaled(193, 70, Qt.KeepAspectRatio,
                                                   Qt.SmoothTransformation))
         self.header.setAlignment(Qt.AlignHCenter)
+        self.pokemon_img.setAlignment(Qt.AlignHCenter)
 
         self.input_pokemon.setPlaceholderText("Search pokemon..")
         self.input_pokemon.returnPressed.connect(self.show_pokemon)
@@ -103,25 +104,49 @@ class PokemonViewer(QWidget):
     def get_pokemon(self, pokemon_name):
         try:
             response = requests.get(f"{BASE_URL}/pokemon/{pokemon_name}")
-
             if response.status_code == 200:
                 data = response.json()
                 return data
             else:
                 print(f"HTTP Error: {response.status_code}")
-                return
+                return None
         except requests.exception.RequestException as e:
             print(f"Error fetching data: {e}")
-            return
+            return None
+        
+
+    def get_pokemon_image(self, pokemon_image):
+        try:
+            response = requests.get(pokemon_image)
+            if response.status_code == 200:
+                content = response.content
+                return content
+            else:
+                print(f"Image HTTP Error: {response.status_code}")
+                return None
+        except requests.exception.RequestException as e:
+            print(f"Error fetching image: {e}")
+            return None
 
 
     def show_pokemon(self):
-        data = self.get_pokemon(pokemon_name)
-
         pokemon_name = self.input_pokemon.text().lower().strip()
-        if not pokemon_name:
+        if not pokemon_name or not pokemon_name.isalpha():
             self.input_pokemon.clear()
-            return
+            return None
+        
+        pokemon_data = self.get_pokemon(pokemon_name)
+        if pokemon_data:
+            pokemon_image = pokemon_data['sprites']['other']['official-artwork']['front_default']
+            pokemon_image_data = self.get_pokemon_image(pokemon_image)
+
+            if pokemon_image_data:
+                pixmap = QPixmap()
+                pixmap.loadFromData(pokemon_image_data)
+                self.pokemon_img.setPixmap(
+                    pixmap.scaled(250, 250, Qt.KeepAspectRatio,
+                                  Qt.SmoothTransformation)
+                )
 
 
 if __name__ == "__main__":
