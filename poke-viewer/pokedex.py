@@ -22,7 +22,7 @@ ASSET_DIR = os.path.join(BASE_DIR, 'asset')
 class PokemonViewer(QWidget):
     def __init__(self):
         super().__init__()
-        self.setFixedSize(800, 600)
+        self.setFixedSize(500, 600)
         
         self.header = QLabel()
         self.input_pokemon = QLineEdit()
@@ -41,8 +41,8 @@ class PokemonViewer(QWidget):
 
     
     def initUI(self):
-        image_width = int(self.width() * 0.15)
-        image_height = int(self.height() * 0.15)
+        image_width = int(self.width() * 0.3)
+        image_height = int(self.height() * 0.3)
         pokedex_logo = QPixmap(os.path.join(ASSET_DIR, 'pokemon_logo.png'))
         self.header.setPixmap(pokedex_logo.scaled(image_width, image_height, Qt.KeepAspectRatio,
                                                   Qt.SmoothTransformation))
@@ -121,7 +121,7 @@ class PokemonViewer(QWidget):
                 );
             }
                            
-            QWidget#card { background-color: #17181c; }
+            QWidget#card { background-color: #282a30; }
 
             QLabel {
                 background-color: transparent;              
@@ -150,65 +150,59 @@ class PokemonViewer(QWidget):
             response = requests.get(f"{BASE_URL}/pokemon/{pokemon_name}")
             if response.status_code == 200:
                 data = response.json()
-                return data
+                return {
+                    'name': data['name'].capitalize(),
+                    'id': data['id'],
+                    'type': data['types'][0]['type']['name'],
+                    'weight': data['weight'],
+                    'height': data['height'],
+                    'hp': data['stats'][0]['base_stat'],
+                    'attack': data['stats'][1]['base_stat'],
+                    'defense': data['stats'][2]['base_stat'],
+                    'image': data['sprites']['other']['official-artwork']['front_default']
+                }
             else:
                 print(f"HTTP Error: {response.status_code}")
                 return None
-        except requests.exception.RequestException as e:
+        except requests.exceptions.RequestException as e:
             print(f"Error fetching data: {e}")
             return None
         
 
-    def load_pokemon_image(self, pokemon_image):
+    def load_pokemon_image(self, image):
         try:
-            response = requests.get(pokemon_image)
-            if response.status_code == 200:
-                content = response.content
-                return content
-            else:
-                print(f"Image HTTP Error: {response.status_code}")
-                return None
-        except requests.exceptions.RequestException as e:
+            response = requests.get(image)
+            image_data = response.content
+
+            pixmap = QPixmap()
+            pixmap.loadFromData(image_data)
+
+            self.pokemon_img.setPixmap(
+                pixmap.scaled(200, 200, Qt.KeepAspectRatio,
+                              Qt.SmoothTransformation)
+            )
+        except Exception as e:
             print(f"Error fetching image: {e}")
             return None
 
 
     def display_pokemon(self):
-        pokemon_name = self.input_pokemon.text().lower().strip()
-        if not pokemon_name or not pokemon_name.isalpha():
+        input_name = self.input_pokemon.text().lower().strip()
+        if not input_name:
             self.input_pokemon.clear()
             return None
         
-        pokemon_data = self.load_pokemon(pokemon_name)
+        pokemon_data = self.load_pokemon(input_name)
         if pokemon_data:
-            pokemon_image = pokemon_data['sprites']['other']['official-artwork']['front_default']
-            pokemon_image_data = self.load_pokemon_image(pokemon_image)
-
-            if pokemon_image_data:
-                pixmap = QPixmap()
-                pixmap.loadFromData(pokemon_image_data)
-                self.pokemon_img.setPixmap(
-                    pixmap.scaled(200, 200, Qt.KeepAspectRatio,
-                                  Qt.SmoothTransformation)
-                )
-
-            pokemon_name = pokemon_data['name'].capitalize()
-            pokemon_id = pokemon_data['id']
-            pokemon_type = pokemon_data['types'][0]['type']['name']
-            pokemon_weight = pokemon_data['weight']
-            pokemon_height = pokemon_data['height']
-            hp = pokemon_data['stats'][0]['base_stat']
-            attack = pokemon_data['stats'][1]['base_stat']
-            defense = pokemon_data['stats'][2]['base_stat']
-
-            self.pokemon_name.setText(pokemon_name)
-            self.pokemon_id.setText(f"#00{pokemon_id}")
-            self.pokemon_type.setText(pokemon_type)
-            self.pokemon_weight.setText(f"Weight: {pokemon_weight}")
-            self.pokemon_height.setText(f"Height: {pokemon_height}")
-            self.hp_stat.setText(f"HP: {hp}")
-            self.attack_stat.setText(f"Attack: {attack}")
-            self.defense_stat.setText(f"Defense: {defense}")
+            self.pokemon_name.setText(pokemon_data['name'])
+            self.pokemon_id.setText(f"#{pokemon_data['id']:04d}")
+            self.pokemon_type.setText(pokemon_data['type'])
+            self.pokemon_weight.setText(f"Weight: {pokemon_data['weight']}")
+            self.pokemon_height.setText(f"Height: {pokemon_data['height']}")
+            self.hp_stat.setText(f"HP: {pokemon_data['hp']}")
+            self.attack_stat.setText(f"Attack: {pokemon_data['attack']}")
+            self.defense_stat.setText(f"Defense: {pokemon_data['defense']}")
+            self.load_pokemon_image(pokemon_data['image'])
 
 
     def handle_errors(self):
