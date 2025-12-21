@@ -168,6 +168,7 @@ class PokemonViewer(QWidget):
 
     def set_type_style(self, label, type_name):
         color = TYPE_COLORS.get(type_name, '#9d9fa1')
+        bg_color = self.hex_to_rgba(color, 0.20)
         label.setStyleSheet(f"""
             QLabel {{
                 max-height: 20px;
@@ -175,10 +176,18 @@ class PokemonViewer(QWidget):
                 font-size: 13px;
                 border-radius: 10px;
                 border: 1px solid {color};
-                background-color: #1e1f21;
+                background-color: {bg_color};
                 color: {color};
             }}
         """)
+
+
+    def hex_to_rgba(self, hex_color, alpha):
+        hex_color = hex_color.lstrip('#')
+        r = int(hex_color[0:2], 16)
+        g = int(hex_color[2:4], 16)
+        b = int(hex_color[4:6], 16)
+        return f'rgba({r}, {g}, {b}, {alpha})'
 
 
     def load_pokemon(self, pokemon_name):
