@@ -10,7 +10,6 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
-    QPushButton,
     QVBoxLayout,
     QWidget
 )
@@ -111,7 +110,7 @@ class PokemonViewer(QWidget):
 
     def styleUI(self):
         self.setStyleSheet("""
-            QWidget { 
+            QWidget {
                 margin: 2px 3px;
                 font-family: Poppins;
                 font-size: 15px;
@@ -125,7 +124,7 @@ class PokemonViewer(QWidget):
                 );
             }
                            
-            QWidget#card {  
+            QWidget#card {
                 border: 1px solid #2f3033;
                 border-radius: 12px;
                 background: qlineargradient(
@@ -139,10 +138,18 @@ class PokemonViewer(QWidget):
 
             QLabel {
                 background-color: transparent;              
-            }     
-                           
-            QLabel#name { font-size:25px; font-weight: Bold; }
-            QLabel#id { font-family: MADE Outer Sans; font-size: 70px; color: #9d9fa1; }
+            } 
+                               
+            QLabel#id {
+                font-family: MADE Outer Sans;
+                font-size: 70px;
+                color: #9d9fa1;
+            }  
+                                     
+            QLabel#name {
+                font-size:25px;
+                font-weight: Bold;
+            }
                            
             QLineEdit {
                 padding: 7px;
@@ -156,6 +163,21 @@ class PokemonViewer(QWidget):
                     stop: 1 #151617
                 );
             }
+        """)
+
+
+    def set_type_style(self, label, type_name):
+        color = TYPE_COLORS.get(type_name, '#9d9fa1')
+        label.setStyleSheet(f"""
+            QLabel {{
+                max-height: 20px;
+                padding: 1px 8px;
+                font-size: 13px;
+                border-radius: 10px;
+                border: 1px solid {color};
+                background-color: #1e1f21;
+                color: {color};
+            }}
         """)
 
 
@@ -210,18 +232,23 @@ class PokemonViewer(QWidget):
         if pokemon_data:
             self.pokemon_name.setText(pokemon_data['name'])
             self.pokemon_id.setText(f"#{pokemon_data['id']:04d}")
-            if len(pokemon_data['type']) == 2:
-                self.pokemon_type.setText(pokemon_data['type'][0])
-                self.pokemon_type2.setText(pokemon_data['type'][1])
-            else:
-                self.pokemon_type.setText(pokemon_data['type'][0])
-                self.pokemon_type2.clear()
             self.pokemon_weight.setText(f"Weight: {pokemon_data['weight']}")
             self.pokemon_height.setText(f"Height: {pokemon_data['height']}")
             self.hp_stat.setText(f"HP: {pokemon_data['hp']}")
             self.attack_stat.setText(f"Attack: {pokemon_data['attack']}")
             self.defense_stat.setText(f"Defense: {pokemon_data['defense']}")
             self.load_pokemon_image(pokemon_data['image'])
+
+            types = pokemon_data['type']
+            self.pokemon_type.setText(types[0])
+            self.set_type_style(self.pokemon_type, types[0])
+
+            if len(types) == 2:
+                self.pokemon_type2.setText(pokemon_data['type'][1])
+                self.set_type_style(self.pokemon_type2, types[1])
+                self.pokemon_type2.show()
+            else:
+                self.pokemon_type2.hide()
 
 
     def handle_errors(self):
