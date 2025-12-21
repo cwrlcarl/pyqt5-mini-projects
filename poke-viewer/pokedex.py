@@ -2,6 +2,7 @@ import os
 import sys
 import requests
 
+from pokemon_type import TYPE_COLORS
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (
@@ -29,7 +30,8 @@ class PokemonViewer(QWidget):
         self.pokemon_img = QLabel()
         self.pokemon_name = QLabel(objectName="name")
         self.pokemon_id = QLabel(objectName="id")
-        self.pokemon_type = QLabel()
+        self.pokemon_type = QLabel(objectName="type")
+        self.pokemon_type2 = QLabel(objectName="type")
         self.pokemon_weight = QLabel()
         self.pokemon_height = QLabel()
         self.hp_stat = QLabel()
@@ -41,20 +43,23 @@ class PokemonViewer(QWidget):
 
     
     def initUI(self):
-        image_width = int(self.width() * 0.3)
-        image_height = int(self.height() * 0.3)
+        image_width = int(self.width() * 0.25)
+        image_height = int(self.height() * 0.25)
         pokedex_logo = QPixmap(os.path.join(ASSET_DIR, 'pokemon_logo.png'))
-        self.header.setPixmap(pokedex_logo.scaled(image_width, image_height, Qt.KeepAspectRatio,
-                                                  Qt.SmoothTransformation))
+        self.header.setPixmap(
+            pokedex_logo.scaled(
+                image_width, image_height,
+                Qt.KeepAspectRatio,
+                Qt.SmoothTransformation))
         
-        self.header.setAlignment(Qt.AlignHCenter)
+        self.pokemon_id.setAlignment(Qt.AlignHCenter)
         self.pokemon_img.setAlignment(Qt.AlignHCenter)
-        self.pokemon_type.setAlignment(Qt.AlignHCenter)
 
-        name_and_id = QHBoxLayout()
-        name_and_id.addWidget(self.pokemon_name)
-        name_and_id.addWidget(self.pokemon_id)
-        name_and_id.setAlignment(Qt.AlignHCenter)
+        pokemon_info = QHBoxLayout()
+        pokemon_info.addWidget(self.pokemon_name)
+        pokemon_info.addWidget(self.pokemon_type)
+        pokemon_info.addWidget(self.pokemon_type2)
+        pokemon_info.setAlignment(Qt.AlignHCenter)
 
         weight_and_height = QHBoxLayout()
         weight_and_height.addWidget(self.pokemon_weight)
@@ -75,13 +80,12 @@ class PokemonViewer(QWidget):
         search_field.addWidget(self.input_pokemon)
 
         widgets = [
-            self.pokemon_img,
-            name_and_id, self.pokemon_type,
+            self.pokemon_id, self.pokemon_img, pokemon_info,
             weight_and_height, pokemon_stats
         ]
 
         horizontal_layouts = [
-            name_and_id, weight_and_height, pokemon_stats
+            pokemon_info, weight_and_height, pokemon_stats
         ]
 
         main_layout = QVBoxLayout()
@@ -96,19 +100,19 @@ class PokemonViewer(QWidget):
                 card.addWidget(widget)
 
         container.setLayout(card)
-        container.setFixedSize(400, 420)
+        container.setFixedSize(400, 440)
 
         main_layout.addLayout(search_field)
-        main_layout.addSpacing(30)
+        main_layout.addSpacing(20)
         main_layout.addWidget(container, alignment=Qt.AlignHCenter)
         self.setLayout(main_layout)
-        self.setContentsMargins(20, 15, 20, 15)
+        self.setContentsMargins(40, 15, 40, 15)
 
 
     def styleUI(self):
         self.setStyleSheet("""
             QWidget { 
-                margin: 2px 10px;
+                margin: 2px 3px;
                 font-family: Poppins;
                 font-size: 15px;
                 color: white;
@@ -121,14 +125,24 @@ class PokemonViewer(QWidget):
                 );
             }
                            
-            QWidget#card { background-color: #282a30; }
+            QWidget#card {  
+                border: 1px solid #2f3033;
+                border-radius: 12px;
+                background: qlineargradient(
+                    x1: 0, y1: 0, 
+                    x2: 1, y2: 1, 
+                    stop: 0 #191b1c,
+                    stop: 0.5 #1c1d1f,
+                    stop: 1 #151617
+                );
+            }
 
             QLabel {
                 background-color: transparent;              
             }     
                            
             QLabel#name { font-size:25px; font-weight: Bold; }
-            QLabel#id { color: #bbbdbf; }
+            QLabel#id { font-family: MADE Outer Sans; font-size: 70px; color: #9d9fa1; }
                            
             QLineEdit {
                 padding: 7px;
@@ -153,7 +167,7 @@ class PokemonViewer(QWidget):
                 return {
                     'name': data['name'].capitalize(),
                     'id': data['id'],
-                    'type': data['types'][0]['type']['name'],
+                    'type': [t['type']['name'] for t in data['types']],
                     'weight': data['weight'],
                     'height': data['height'],
                     'hp': data['stats'][0]['base_stat'],
@@ -196,7 +210,12 @@ class PokemonViewer(QWidget):
         if pokemon_data:
             self.pokemon_name.setText(pokemon_data['name'])
             self.pokemon_id.setText(f"#{pokemon_data['id']:04d}")
-            self.pokemon_type.setText(pokemon_data['type'])
+            if len(pokemon_data['type']) == 2:
+                self.pokemon_type.setText(pokemon_data['type'][0])
+                self.pokemon_type2.setText(pokemon_data['type'][1])
+            else:
+                self.pokemon_type.setText(pokemon_data['type'][0])
+                self.pokemon_type2.clear()
             self.pokemon_weight.setText(f"Weight: {pokemon_data['weight']}")
             self.pokemon_height.setText(f"Height: {pokemon_data['height']}")
             self.hp_stat.setText(f"HP: {pokemon_data['hp']}")
