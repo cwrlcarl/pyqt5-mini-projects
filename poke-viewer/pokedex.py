@@ -16,13 +16,13 @@ from PyQt5.QtWidgets import (
 
 BASE_URL = "https://pokeapi.co/api/v2"
 BASE_DIR = os.path.dirname(__file__)
-ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
+ASSET_DIR = os.path.join(BASE_DIR, 'asset')
 
 
 class PokemonViewer(QWidget):
     def __init__(self):
         super().__init__()
-        self.setFixedSize(700, 550)
+        self.setFixedSize(800, 600)
         
         self.header = QLabel()
         self.input_pokemon = QLineEdit()
@@ -41,9 +41,9 @@ class PokemonViewer(QWidget):
 
     
     def initUI(self):
-        image_width = int(self.width() * 0.2)
-        image_height = int(self.height() * 0.2)
-        pokedex_logo = QPixmap(os.path.join(ASSETS_DIR, 'pokemon_logo.png'))
+        image_width = int(self.width() * 0.15)
+        image_height = int(self.height() * 0.15)
+        pokedex_logo = QPixmap(os.path.join(ASSET_DIR, 'pokemon_logo.png'))
         self.header.setPixmap(pokedex_logo.scaled(image_width, image_height, Qt.KeepAspectRatio,
                                                   Qt.SmoothTransformation))
         
@@ -69,29 +69,38 @@ class PokemonViewer(QWidget):
 
         self.input_pokemon.setPlaceholderText("Search pokemon..")
         self.input_pokemon.returnPressed.connect(self.display_pokemon)
-        self.search_btn.clicked.connect(self.display_pokemon)
-        self.search_btn.setCursor(Qt.PointingHandCursor)
 
         search_field = QHBoxLayout()
         search_field.addWidget(self.header)
         search_field.addWidget(self.input_pokemon)
 
         widgets = [
-            search_field, self.pokemon_img,
+            self.pokemon_img,
             name_and_id, self.pokemon_type,
             weight_and_height, pokemon_stats
         ]
 
         horizontal_layouts = [
-            search_field, name_and_id, weight_and_height, pokemon_stats
+            name_and_id, weight_and_height, pokemon_stats
         ]
 
         main_layout = QVBoxLayout()
+
+        container = QWidget(objectName="card")
+        card = QVBoxLayout()
+
         for widget in widgets: 
             if widget in horizontal_layouts:
-                main_layout.addLayout(widget)
+                card.addLayout(widget)
             else:
-                main_layout.addWidget(widget)
+                card.addWidget(widget)
+
+        container.setLayout(card)
+        container.setFixedSize(400, 420)
+
+        main_layout.addLayout(search_field)
+        main_layout.addSpacing(30)
+        main_layout.addWidget(container, alignment=Qt.AlignHCenter)
         self.setLayout(main_layout)
         self.setContentsMargins(20, 15, 20, 15)
 
@@ -111,6 +120,8 @@ class PokemonViewer(QWidget):
                     stop: 1 #151617
                 );
             }
+                           
+            QWidget#card { background-color: #17181c; }
 
             QLabel {
                 background-color: transparent;              
@@ -198,6 +209,10 @@ class PokemonViewer(QWidget):
             self.hp_stat.setText(f"HP: {hp}")
             self.attack_stat.setText(f"Attack: {attack}")
             self.defense_stat.setText(f"Defense: {defense}")
+
+
+    def handle_errors(self):
+        pass
 
 
 if __name__ == "__main__":
