@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QStackedLayout,
     QVBoxLayout,
     QWidget
 )
@@ -22,6 +23,7 @@ ASSET_DIR = os.path.join(BASE_DIR, 'asset')
 class PokemonViewer(QWidget):
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("Pokemon Viewer")
         self.setFixedSize(500, 600)
         
         self.header = QLabel()
@@ -51,8 +53,14 @@ class PokemonViewer(QWidget):
                 Qt.KeepAspectRatio,
                 Qt.SmoothTransformation))
         
+        overlay_widget = QWidget(objectName="stack")
+        overlay_layout = QStackedLayout(overlay_widget)
+        overlay_layout.setStackingMode(QStackedLayout.StackAll)
         self.pokemon_id.setAlignment(Qt.AlignHCenter)
         self.pokemon_img.setAlignment(Qt.AlignHCenter)
+        overlay_layout.addWidget(self.pokemon_img)
+        overlay_layout.addWidget(self.pokemon_id)
+        overlay_widget.setFixedHeight(200)
 
         pokemon_info = QHBoxLayout()
         pokemon_info.addWidget(self.pokemon_name)
@@ -78,8 +86,8 @@ class PokemonViewer(QWidget):
         search_field.addWidget(self.header)
         search_field.addWidget(self.input_pokemon)
 
-        widgets = [
-            self.pokemon_id, self.pokemon_img, pokemon_info,
+        layouts = [
+            overlay_widget, pokemon_info,
             weight_and_height, pokemon_stats
         ]
 
@@ -92,11 +100,11 @@ class PokemonViewer(QWidget):
         container = QWidget(objectName="card")
         card = QVBoxLayout()
 
-        for widget in widgets: 
-            if widget in horizontal_layouts:
-                card.addLayout(widget)
+        for layout in layouts: 
+            if layout in horizontal_layouts:
+                card.addLayout(layout)
             else:
-                card.addWidget(widget)
+                card.addWidget(layout)
 
         container.setLayout(card)
         container.setFixedSize(400, 440)
@@ -135,6 +143,10 @@ class PokemonViewer(QWidget):
                     stop: 1 #151617
                 );
             }
+                           
+            QWidget#stack {
+                background-color: transparent;
+            }
 
             QLabel {
                 background-color: transparent;              
@@ -142,8 +154,8 @@ class PokemonViewer(QWidget):
                                
             QLabel#id {
                 font-family: MADE Outer Sans;
-                font-size: 70px;
-                color: #9d9fa1;
+                font-size: 85px;
+                color: #575859;
             }  
                                      
             QLabel#name {
