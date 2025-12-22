@@ -31,8 +31,9 @@ class PokemonViewer(QWidget):
         self.pokemon_img = QLabel()
         self.pokemon_name = QLabel(objectName="name")
         self.pokemon_id = QLabel(objectName="id")
-        self.pokemon_type = QLabel(objectName="type")
-        self.pokemon_type2 = QLabel(objectName="type")
+        self.pokemon_type = QLabel()
+        self.pokemon_type2 = QLabel()
+        self.pokemon_description = QLabel(objectName="desc")
         self.pokemon_weight = QLabel()
         self.pokemon_height = QLabel()
         self.hp_stat = QLabel()
@@ -52,6 +53,13 @@ class PokemonViewer(QWidget):
                 image_width, image_height,
                 Qt.KeepAspectRatio,
                 Qt.SmoothTransformation))
+
+        search_field = QHBoxLayout()
+        search_field.addWidget(self.header)
+        search_field.addWidget(self.input_pokemon)
+
+        self.input_pokemon.setPlaceholderText("Search pokemon..")
+        self.input_pokemon.returnPressed.connect(self.display_pokemon)
         
         overlay_widget = QWidget(objectName="stack")
         overlay_layout = QStackedLayout(overlay_widget)
@@ -64,30 +72,23 @@ class PokemonViewer(QWidget):
 
         pokemon_info = QHBoxLayout()
         pokemon_info.addWidget(self.pokemon_name)
-        pokemon_info.addWidget(self.pokemon_type)
-        pokemon_info.addWidget(self.pokemon_type2)
-        pokemon_info.setAlignment(Qt.AlignHCenter)
+        pokemon_info.addWidget(self.pokemon_type, alignment=Qt.AlignHCenter)
+        pokemon_info.addWidget(self.pokemon_type2, alignment=Qt.AlignHCenter)
+
+        self.pokemon_description.setWordWrap(True)
 
         weight_and_height = QHBoxLayout()
         weight_and_height.addWidget(self.pokemon_weight)
         weight_and_height.addWidget(self.pokemon_height)
-        weight_and_height.setAlignment(Qt.AlignHCenter)
 
         pokemon_stats = QHBoxLayout()
         pokemon_stats.addWidget(self.hp_stat)
         pokemon_stats.addWidget(self.attack_stat)
         pokemon_stats.addWidget(self.defense_stat)
-        pokemon_stats.setAlignment(Qt.AlignHCenter)
-
-        self.input_pokemon.setPlaceholderText("Search pokemon..")
-        self.input_pokemon.returnPressed.connect(self.display_pokemon)
-
-        search_field = QHBoxLayout()
-        search_field.addWidget(self.header)
-        search_field.addWidget(self.input_pokemon)
 
         layouts = [
             overlay_widget, pokemon_info,
+            self.pokemon_description,
             weight_and_height, pokemon_stats
         ]
 
@@ -163,6 +164,11 @@ class PokemonViewer(QWidget):
                 font-weight: Bold;
             }
                            
+            QLabel#desc {
+                font-size: 13px;
+                color: #575859;
+            }
+                           
             QLineEdit {
                 padding: 7px;
                 border: 1px solid #1e1f21;
@@ -207,10 +213,12 @@ class PokemonViewer(QWidget):
             response = requests.get(f"{BASE_URL}/pokemon/{pokemon_name}")
             if response.status_code == 200:
                 data = response.json()
+                description = self.load_pokemon_description(pokemon_name)
                 return {
                     'name': data['name'].capitalize(),
                     'id': data['id'],
                     'type': [t['type']['name'] for t in data['types']],
+                    'description': description,
                     'weight': data['weight'],
                     'height': data['height'],
                     'hp': data['stats'][0]['base_stat'],
@@ -223,6 +231,24 @@ class PokemonViewer(QWidget):
                 return None
         except requests.exceptions.RequestException as e:
             print(f"Error fetching data: {e}")
+            return None
+        
+
+    def load_pokemon_description(self, pokemon_name):
+        try:
+            response = requests.get(f"{BASE_URL}/pokemon-species/{pokemon_name}")
+            if response.status_code == 200:
+                data = response.json()
+                for entry in data['flavor_text_entries']:
+                    if entry['language']['name'] == 'en':
+                        description = entry['flavor_text']
+                        description = description.replace('\n', ' ').replace('\f', ' ')
+                        return description
+            else:
+                print(f"HTTP Error: {response.status_code}")
+                return None
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching description: {e}")
             return None
         
 
@@ -253,6 +279,7 @@ class PokemonViewer(QWidget):
         if pokemon_data:
             self.pokemon_name.setText(pokemon_data['name'])
             self.pokemon_id.setText(f"#{pokemon_data['id']:04d}")
+            self.pokemon_description.setText(pokemon_data['description'])
             self.pokemon_weight.setText(f"Weight: {pokemon_data['weight']}")
             self.pokemon_height.setText(f"Height: {pokemon_data['height']}")
             self.hp_stat.setText(f"HP: {pokemon_data['hp']}")
