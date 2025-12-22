@@ -277,15 +277,8 @@ class PokemonViewer(QWidget):
         
         pokemon_data = self.load_pokemon(input_name)
         if pokemon_data:
-            self.pokemon_name.setText(pokemon_data['name'])
-            self.pokemon_id.setText(f"#{pokemon_data['id']:04d}")
-            self.pokemon_description.setText(pokemon_data['description'])
-            self.pokemon_weight.setText(f"Weight: {pokemon_data['weight']}")
-            self.pokemon_height.setText(f"Height: {pokemon_data['height']}")
-            self.hp_stat.setText(f"HP: {pokemon_data['hp']}")
-            self.attack_stat.setText(f"Attack: {pokemon_data['attack']}")
-            self.defense_stat.setText(f"Defense: {pokemon_data['defense']}")
-            self.load_pokemon_image(pokemon_data['image'])
+            weight = self.convert_weight(pokemon_data['weight'])
+            height = self.convert_height(pokemon_data['height'])
 
             types = pokemon_data['type']
             self.pokemon_type.setText(types[0])
@@ -297,6 +290,29 @@ class PokemonViewer(QWidget):
                 self.pokemon_type2.show()
             else:
                 self.pokemon_type2.hide()
+
+            self.pokemon_name.setText(pokemon_data['name'])
+            self.pokemon_id.setText(f"#{pokemon_data['id']:04d}")
+            self.pokemon_description.setText(pokemon_data['description'])
+            self.pokemon_weight.setText(f"Weight: {weight}")
+            self.pokemon_height.setText(f"Height: {height}")
+            self.hp_stat.setText(f"HP: {pokemon_data['hp']}")
+            self.attack_stat.setText(f"Attack: {pokemon_data['attack']}")
+            self.defense_stat.setText(f"Defense: {pokemon_data['defense']}")
+            self.load_pokemon_image(pokemon_data['image'])
+
+
+    def convert_weight(self, hectogram):
+        kilogram = hectogram / 10
+        pound = kilogram * 2.20462
+        return f"{pound:.1f} lbs"
+
+
+    def convert_height(self, decimeter):
+        meter = decimeter / 10
+        feet = meter * 3.28084
+        inch = (feet - int(feet)) * 12
+        return f"{feet:.0f}'{inch:.0f}\""
 
 
     def handle_errors(self):
