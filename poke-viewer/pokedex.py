@@ -31,7 +31,7 @@ class PokemonViewer(QWidget):
         self.color_label = QLabel(objectName="color")
         self.pokemon_img = QLabel()
         self.pokemon_name = QLabel(objectName="name")
-        self.pokemon_id = QLabel()
+        self.pokemon_id = QLabel(objectName="id")
         self.pokemon_type = QLabel()
         self.pokemon_type2 = QLabel()
         self.pokemon_description = QLabel(objectName="desc")
@@ -65,29 +65,38 @@ class PokemonViewer(QWidget):
         overlay_widget = QWidget(objectName="stack")
         overlay_layout = QStackedLayout(overlay_widget)
         overlay_layout.setStackingMode(QStackedLayout.StackAll)
-        self.color_label.setAlignment(Qt.AlignHCenter)
         self.pokemon_img.setAlignment(Qt.AlignHCenter)
         overlay_layout.addWidget(self.pokemon_img)
         overlay_layout.addWidget(self.color_label)
         
         name_and_id = QHBoxLayout()
+        name_and_id.setContentsMargins(0, 0, 0, 0)
         name_and_id.addWidget(self.pokemon_name)
         name_and_id.addWidget(self.pokemon_id)
+        name_and_id.setAlignment(Qt.AlignHCenter)
 
         pokemon_type = QHBoxLayout()
+        pokemon_type.setContentsMargins(0, 0, 0, 0)
         pokemon_type.addWidget(self.pokemon_type, alignment=Qt.AlignHCenter)
         pokemon_type.addWidget(self.pokemon_type2, alignment=Qt.AlignHCenter)
+        pokemon_type.setAlignment(Qt.AlignHCenter)
 
         self.pokemon_description.setWordWrap(True)
 
         weight_and_height = QHBoxLayout()
+        weight_and_height.setContentsMargins(0, 0, 0, 0)
+        weight_and_height.setSpacing(30)
         weight_and_height.addWidget(self.pokemon_weight)
         weight_and_height.addWidget(self.pokemon_height)
+        weight_and_height.addStretch()
 
         pokemon_stats = QHBoxLayout()
+        pokemon_stats.setContentsMargins(0, 0, 0, 0)
+        pokemon_stats.setSpacing(30)
         pokemon_stats.addWidget(self.hp_stat)
         pokemon_stats.addWidget(self.attack_stat)
         pokemon_stats.addWidget(self.defense_stat)
+        pokemon_stats.addStretch()
 
         layouts = [
             overlay_widget, name_and_id,
@@ -111,20 +120,20 @@ class PokemonViewer(QWidget):
             else:
                 card.addWidget(layout)
 
+        card.setContentsMargins(20, 20, 20, 10)
         container.setLayout(card)
-        container.setFixedSize(400, 470)
+        container.setFixedSize(350, 470)
 
         main_layout.addLayout(search_field)
-        main_layout.addSpacing(20)
         main_layout.addWidget(container, alignment=Qt.AlignHCenter)
+        main_layout.setSpacing(20)
+        main_layout.setContentsMargins(30, 30, 30, 30)
         self.setLayout(main_layout)
-        self.setContentsMargins(40, 15, 40, 15)
 
 
     def styleUI(self):
         self.setStyleSheet("""
             QWidget {
-                margin: 2px 3px;
                 font-family: Poppins;
                 font-size: 15px;
                 color: white;
@@ -163,7 +172,6 @@ class PokemonViewer(QWidget):
             }
                            
             QLabel#id {
-                font-family: MADE Outer Sans;
                 font-size: 15px;
                 color: #575859;
             }
@@ -190,7 +198,7 @@ class PokemonViewer(QWidget):
 
     def set_type_style(self, label, type_name):
         color = TYPE_COLORS.get(type_name, '#9d9fa1')
-        bg_color = self.hex_to_rgba(color, 0.20)
+        bg_color = self.hex_to_rgba(color, 0.15)
         label.setStyleSheet(f"""
             QLabel#color {{
                 min-height: 200px;
@@ -310,8 +318,8 @@ class PokemonViewer(QWidget):
             self.pokemon_weight.setText(f"Weight: {weight}")
             self.pokemon_height.setText(f"Height: {height}")
             self.hp_stat.setText(f"HP: {pokemon_data['hp']}")
-            self.attack_stat.setText(f"Attack: {pokemon_data['attack']}")
-            self.defense_stat.setText(f"Defense: {pokemon_data['defense']}")
+            self.attack_stat.setText(f"ATK: {pokemon_data['attack']}")
+            self.defense_stat.setText(f"DEF: {pokemon_data['defense']}")
             self.load_pokemon_image(pokemon_data['image'])
 
 
