@@ -28,7 +28,6 @@ class PokemonViewer(QWidget):
         
         self.header = QLabel()
         self.input_pokemon = QLineEdit()
-        self.color_label = QLabel(objectName="color")
         self.pokemon_img = QLabel()
         self.pokemon_name = QLabel(objectName="name")
         self.pokemon_id = QLabel(objectName="id")
@@ -62,12 +61,7 @@ class PokemonViewer(QWidget):
         self.input_pokemon.setPlaceholderText("Search pokemon..")
         self.input_pokemon.returnPressed.connect(self.display_pokemon)
         
-        overlay_widget = QWidget(objectName="stack")
-        overlay_layout = QStackedLayout(overlay_widget)
-        overlay_layout.setStackingMode(QStackedLayout.StackAll)
         self.pokemon_img.setAlignment(Qt.AlignHCenter)
-        overlay_layout.addWidget(self.pokemon_img)
-        overlay_layout.addWidget(self.color_label)
         
         name_and_id = QHBoxLayout()
         name_and_id.setContentsMargins(0, 0, 0, 0)
@@ -99,7 +93,7 @@ class PokemonViewer(QWidget):
         pokemon_stats.addStretch()
 
         layouts = [
-            overlay_widget, name_and_id,
+            self.pokemon_img, name_and_id,
             pokemon_type, self.pokemon_description,
             weight_and_height, pokemon_stats
         ]
@@ -157,10 +151,6 @@ class PokemonViewer(QWidget):
                     stop: 1 #151617
                 );
             }
-                           
-            QWidget#stack {
-                background-color: transparent;
-            }
 
             QLabel {
                 background-color: transparent;              
@@ -199,12 +189,8 @@ class PokemonViewer(QWidget):
     def set_type_style(self, label, type_name):
         color = TYPE_COLORS.get(type_name, '#9d9fa1')
         bg_color = self.hex_to_rgba(color, 0.15)
-        label.setStyleSheet(f"""
-            QLabel#color {{
-                min-height: 200px;
-                background-color: {bg_color}
-            }}
-                            
+        
+        label.setStyleSheet(f"""                            
             QLabel {{
                 max-height: 20px;
                 padding: 1px 8px;
@@ -214,7 +200,6 @@ class PokemonViewer(QWidget):
                 background-color: {bg_color};
                 color: {color};
             }}
-            
         """)
 
 
@@ -297,8 +282,6 @@ class PokemonViewer(QWidget):
         if pokemon_data:
             types = pokemon_data['type']
 
-            self.set_type_style(self.color_label, types[0])
-
             self.pokemon_type.setText(types[0])
             self.set_type_style(self.pokemon_type, types[0])
 
@@ -334,10 +317,6 @@ class PokemonViewer(QWidget):
         feet = meter * 3.28084
         inch = (feet - int(feet)) * 12
         return f"{feet:.0f}'{inch:.0f}\""
-
-
-    def handle_errors(self):
-        pass
 
 
 if __name__ == "__main__":
