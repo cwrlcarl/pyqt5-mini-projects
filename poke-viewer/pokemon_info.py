@@ -1,5 +1,4 @@
-import os
-import sys
+# pokemon_info.py
 import requests
 
 from pokemon_type import TYPE_COLORS
@@ -9,21 +8,22 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QPushButton,
     QVBoxLayout,
     QWidget
 )
 
 BASE_URL = "https://pokeapi.co/api/v2"
-BASE_DIR = os.path.dirname(__file__)
-ASSET_DIR = os.path.join(BASE_DIR, 'asset')
 
 
 class PokemonInfo(QWidget):
-    def __init__(self):
+    def __init__(self, on_back_callback):
         super().__init__()
+        self.on_back = on_back_callback
         
+        self.back_btn = QPushButton("<-")
         self.header = QLabel()
-        self.input_pokemon = QLineEdit()
+        self.search_input = QLineEdit()
         self.pokemon_img = QLabel()
         self.pokemon_name = QLabel(objectName="name")
         self.pokemon_id = QLabel(objectName="id")
@@ -43,21 +43,14 @@ class PokemonInfo(QWidget):
     def initUI(self):
         main_layout = QVBoxLayout()
 
-        image_width = int(self.width() * 0.25)
-        image_height = int(self.height() * 0.25)
-        pokedex_logo = QPixmap(os.path.join(ASSET_DIR, 'pokemon_logo.png'))
-        self.header.setPixmap(
-            pokedex_logo.scaled(
-                image_width, image_height,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation))
+        self.back_btn.clicked.connect(self.on_back)
 
         search_field = QHBoxLayout()
-        search_field.addWidget(self.header)
-        search_field.addWidget(self.input_pokemon)
+        search_field.addWidget(self.back_btn)
+        search_field.addWidget(self.search_input)
 
-        self.input_pokemon.setPlaceholderText("Search pokemon..")
-        self.input_pokemon.returnPressed.connect(self.display_pokemon)
+        self.search_input.setPlaceholderText("Search pokemon..")
+        self.search_input.returnPressed.connect(self.handle_search)
         
         self.pokemon_img.setAlignment(Qt.AlignHCenter)
         
@@ -120,15 +113,70 @@ class PokemonInfo(QWidget):
         main_layout.setContentsMargins(30, 30, 30, 30)
 
         self.setLayout(main_layout)
-
-
-    def display_pokemon(self):
-        input_name = self.input_pokemon.text().lower().strip()
-        if not input_name:
-            self.input_pokemon.clear()
-            return None
         
-        pokemon_data = self.load_pokemon(input_name)
+
+    def styleUI(self):
+        self.setStyleSheet("""
+            QWidget#card {
+                border: 1px solid #2f3033;
+                border-radius: 12px;
+                background: qlineargradient(
+                    x1: 0, y1: 0, 
+                    x2: 1, y2: 1, 
+                    stop: 0 #191b1c,
+                    stop: 0.5 #1c1d1f,
+                    stop: 1 #151617
+                );
+            }
+
+            QLabel {
+                background-color: transparent;              
+            } 
+                                     
+            QLabel#name {
+                font-size:25px;
+                font-weight: Bold;
+            }
+                           
+            QLabel#id {
+                font-size: 15px;
+                color: #575859;
+            }
+                           
+            QLabel#desc {
+                font-size: 13px;
+                color: #575859;
+            }
+                           
+            QLineEdit {
+                padding: 7px;
+                border: 1px solid #1e1f21;
+                border-radius: 10px;
+                background: qlineargradient(
+                    x1: 0, y1: 0, 
+                    x2: 1, y2: 1, 
+                    stop: 0 #202224,
+                    stop: 0.3 #1e1f21,
+                    stop: 1 #151617
+                );
+            }
+        """)
+
+
+    def handle_search(self):
+        pokemon_name = self.search_input.text().lower().strip()
+        if pokemon_name:
+            success = self.display_pokemon(pokemon_name)
+            if not success:
+                print(f"Pokemon {pokemon_name} not found!")
+
+
+    def display_pokemon(self, pokemon_name):
+        pokemon_name = pokemon_name.lower().strip()
+        if not pokemon_name:
+            return False
+        
+        pokemon_data = self.load_pokemon(pokemon_name)
         if pokemon_data:
             types = pokemon_data['type']
 
@@ -154,6 +202,11 @@ class PokemonInfo(QWidget):
             self.attack_stat.setText(f"ATK: {pokemon_data['attack']}")
             self.defense_stat.setText(f"DEF: {pokemon_data['defense']}")
             self.load_pokemon_image(pokemon_data['image'])
+
+            self.search_input.clear()
+            return True
+        else:
+            return False
 
 
     def load_pokemon(self, pokemon_name):
