@@ -6,11 +6,9 @@ from pokemon_type import TYPE_COLORS
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (
-    QApplication,
     QHBoxLayout,
     QLabel,
     QLineEdit,
-    QStackedWidget,
     QVBoxLayout,
     QWidget
 )
@@ -20,11 +18,9 @@ BASE_DIR = os.path.dirname(__file__)
 ASSET_DIR = os.path.join(BASE_DIR, 'asset')
 
 
-class PokemonViewer(QWidget):
+class PokemonInfo(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Pokemon Viewer")
-        self.setFixedSize(500, 620)
         
         self.header = QLabel()
         self.input_pokemon = QLineEdit()
@@ -45,6 +41,8 @@ class PokemonViewer(QWidget):
 
     
     def initUI(self):
+        main_layout = QVBoxLayout()
+
         image_width = int(self.width() * 0.25)
         image_height = int(self.height() * 0.25)
         pokedex_logo = QPixmap(os.path.join(ASSET_DIR, 'pokemon_logo.png'))
@@ -103,8 +101,6 @@ class PokemonViewer(QWidget):
             weight_and_height, pokemon_stats
         ]
 
-        main_layout = QVBoxLayout()
-
         container = QWidget(objectName="card")
         card = QVBoxLayout()
 
@@ -122,101 +118,42 @@ class PokemonViewer(QWidget):
         main_layout.addWidget(container, alignment=Qt.AlignHCenter)
         main_layout.setSpacing(20)
         main_layout.setContentsMargins(30, 30, 30, 30)
+
         self.setLayout(main_layout)
 
 
-    def styleUI(self):
-        self.setStyleSheet("""
-            QWidget {
-                font-family: Poppins;
-                font-size: 15px;
-                color: white;
-                background: qlineargradient(
-                    x1: 0, y1: 0, 
-                    x2: 1, y2: 1, 
-                    stop: 0 #202224,
-                    stop: 0.3 #101114,
-                    stop: 1 #151617
-                );
-            }
-                           
-            QWidget#card {
-                border: 1px solid #2f3033;
-                border-radius: 12px;
-                background: qlineargradient(
-                    x1: 0, y1: 0, 
-                    x2: 1, y2: 1, 
-                    stop: 0 #191b1c,
-                    stop: 0.5 #1c1d1f,
-                    stop: 1 #151617
-                );
-            }
-
-            QLabel {
-                background-color: transparent;              
-            } 
-                                     
-            QLabel#name {
-                font-size:25px;
-                font-weight: Bold;
-            }
-                           
-            QLabel#id {
-                font-size: 15px;
-                color: #575859;
-            }
-                           
-            QLabel#desc {
-                font-size: 13px;
-                color: #575859;
-            }
-                           
-            QLineEdit {
-                padding: 7px;
-                border: 1px solid #1e1f21;
-                border-radius: 10px;
-                background: qlineargradient(
-                    x1: 0, y1: 0, 
-                    x2: 1, y2: 1, 
-                    stop: 0 #202224,
-                    stop: 0.3 #1e1f21,
-                    stop: 1 #151617
-                );
-            }
-        """)
-
-
-    def set_type_style(self, label, type_name):
-        color = TYPE_COLORS.get(type_name, '#9d9fa1')
-        bg_color = self.hex_to_rgba(color, 0.15)
+    def display_pokemon(self):
+        input_name = self.input_pokemon.text().lower().strip()
+        if not input_name:
+            self.input_pokemon.clear()
+            return None
         
-        label.setStyleSheet(f"""                            
-            QLabel {{
-                max-height: 20px;
-                padding: 1px 8px;
-                font-size: 13px;
-                border-radius: 10px;
-                border: 1px solid {color};
-                background-color: {bg_color};
-                color: {color};
-            }}
-        """)
+        pokemon_data = self.load_pokemon(input_name)
+        if pokemon_data:
+            types = pokemon_data['type']
 
+            self.pokemon_type.setText(types[0])
+            self.set_type_style(self.pokemon_type, types[0])
 
-    def hex_to_rgba(self, hex_color, alpha):
-        hex_color = hex_color.lstrip('#')
-        r = int(hex_color[0:2], 16)
-        g = int(hex_color[2:4], 16)
-        b = int(hex_color[4:6], 16)
-        return f'rgba({r}, {g}, {b}, {alpha})'
-    
+            if len(types) == 2:
+                self.pokemon_type2.setText(pokemon_data['type'][1])
+                self.set_type_style(self.pokemon_type2, types[1])
+                self.pokemon_type2.show()
+            else:
+                self.pokemon_type2.hide()
 
-    def create_homepage(self):
-        pass
+            weight = self.convert_weight(pokemon_data['weight'])
+            height = self.convert_height(pokemon_data['height'])
 
-
-    def create_info_page(self):
-        pass
+            self.pokemon_name.setText(pokemon_data['name'])
+            self.pokemon_id.setText(f"#{pokemon_data['id']:04d}")
+            self.pokemon_description.setText(pokemon_data['description'])
+            self.pokemon_weight.setText(f"Weight: {weight}")
+            self.pokemon_height.setText(f"Height: {height}")
+            self.hp_stat.setText(f"HP: {pokemon_data['hp']}")
+            self.attack_stat.setText(f"ATK: {pokemon_data['attack']}")
+            self.defense_stat.setText(f"DEF: {pokemon_data['defense']}")
+            self.load_pokemon_image(pokemon_data['image'])
 
 
     def load_pokemon(self, pokemon_name):
@@ -280,38 +217,29 @@ class PokemonViewer(QWidget):
             return None
 
 
-    def display_pokemon(self):
-        input_name = self.input_pokemon.text().lower().strip()
-        if not input_name:
-            self.input_pokemon.clear()
-            return None
+    def set_type_style(self, label, type_name):
+        color = TYPE_COLORS.get(type_name, '#9d9fa1')
+        bg_color = self.hex_to_rgba(color, 0.15)
         
-        pokemon_data = self.load_pokemon(input_name)
-        if pokemon_data:
-            types = pokemon_data['type']
+        label.setStyleSheet(f"""                            
+            QLabel {{
+                max-height: 20px;
+                padding: 1px 8px;
+                font-size: 13px;
+                border-radius: 10px;
+                border: 1px solid {color};
+                background-color: {bg_color};
+                color: {color};
+            }}
+        """)
 
-            self.pokemon_type.setText(types[0])
-            self.set_type_style(self.pokemon_type, types[0])
 
-            if len(types) == 2:
-                self.pokemon_type2.setText(pokemon_data['type'][1])
-                self.set_type_style(self.pokemon_type2, types[1])
-                self.pokemon_type2.show()
-            else:
-                self.pokemon_type2.hide()
-
-            weight = self.convert_weight(pokemon_data['weight'])
-            height = self.convert_height(pokemon_data['height'])
-
-            self.pokemon_name.setText(pokemon_data['name'])
-            self.pokemon_id.setText(f"#{pokemon_data['id']:04d}")
-            self.pokemon_description.setText(pokemon_data['description'])
-            self.pokemon_weight.setText(f"Weight: {weight}")
-            self.pokemon_height.setText(f"Height: {height}")
-            self.hp_stat.setText(f"HP: {pokemon_data['hp']}")
-            self.attack_stat.setText(f"ATK: {pokemon_data['attack']}")
-            self.defense_stat.setText(f"DEF: {pokemon_data['defense']}")
-            self.load_pokemon_image(pokemon_data['image'])
+    def hex_to_rgba(self, hex_color, alpha):
+        hex_color = hex_color.lstrip('#')
+        r = int(hex_color[0:2], 16)
+        g = int(hex_color[2:4], 16)
+        b = int(hex_color[4:6], 16)
+        return f'rgba({r}, {g}, {b}, {alpha})'
 
 
     def convert_weight(self, hectogram):
@@ -325,10 +253,3 @@ class PokemonViewer(QWidget):
         feet = meter * 3.28084
         inch = (feet - int(feet)) * 12
         return f"{feet:.0f}'{inch:.0f}\""
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    poke = PokemonViewer()
-    poke.show()
-    sys.exit(app.exec_())
