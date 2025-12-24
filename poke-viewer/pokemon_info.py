@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
-    QStackedLayout,
+    QStackedWidget,
     QVBoxLayout,
     QWidget
 )
@@ -209,6 +209,14 @@ class PokemonViewer(QWidget):
         g = int(hex_color[2:4], 16)
         b = int(hex_color[4:6], 16)
         return f'rgba({r}, {g}, {b}, {alpha})'
+    
+
+    def create_homepage(self):
+        pass
+
+
+    def create_info_page(self):
+        pass
 
 
     def load_pokemon(self, pokemon_name):
