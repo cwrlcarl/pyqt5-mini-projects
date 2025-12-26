@@ -1,9 +1,5 @@
-# pokemon_info.py
-import requests
-
-from pokemon_type import TYPE_COLORS
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -12,8 +8,13 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget
 )
+from pokemon_type import TYPE_COLORS
+import os
+import requests
 
 BASE_URL = "https://pokeapi.co/api/v2"
+BASE_DIR = os.path.dirname(__file__)
+ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
 
 
 class PokemonInfo(QWidget):
@@ -21,7 +22,7 @@ class PokemonInfo(QWidget):
         super().__init__()
         self.on_back = on_back_callback
         
-        self.back_btn = QPushButton("<-")
+        self.back_btn = QPushButton()
         self.header = QLabel()
         self.search_input = QLineEdit()
         self.pokemon_img = QLabel()
@@ -43,6 +44,10 @@ class PokemonInfo(QWidget):
     def initUI(self):
         main_layout = QVBoxLayout()
 
+        back_button = QIcon(os.path.join(ASSETS_DIR, 'left_arrow.png'))
+        self.back_btn.setIcon(back_button)
+        self.back_btn.setIconSize(QSize(15, 15))
+        self.back_btn.setCursor(Qt.PointingHandCursor)
         self.back_btn.clicked.connect(self.on_back)
 
         search_field = QHBoxLayout()
@@ -127,6 +132,17 @@ class PokemonInfo(QWidget):
                     stop: 0.5 #1c1d1f,
                     stop: 1 #151617
                 );
+            }
+                           
+            QPushButton {
+                padding: 14px;
+                border: None;
+                border-radius: 12px;
+                background-color: transparent;
+            }
+                           
+            QPushButton::hover {
+                background-color: #1e1f21;
             }
 
             QLabel {
