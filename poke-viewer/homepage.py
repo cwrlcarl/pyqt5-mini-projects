@@ -1,6 +1,3 @@
-import os
-import requests
-
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (
@@ -9,9 +6,10 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget
 )
+import os
 
 BASE_DIR = os.path.dirname(__file__)
-ASSET_DIR = os.path.join(BASE_DIR, 'asset')
+ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
 
 
 class HomePage(QWidget):
@@ -20,8 +18,8 @@ class HomePage(QWidget):
         self.on_search = on_search_callback
 
         self.pokemon_logo = QLabel()
-        self.welcome_label = QLabel("Welcome to Pokémon Viewer!",
-                                    objectName="title")
+        self.welcome_label = QLabel("Welcome to", objectName="welcome")
+        self.title_label = QLabel("Pokémon Viewer!", objectName="title")
         self.subtitle = QLabel("Search your favorite Pokémon to get started",
                                objectName="desc")
         self.search_input = QLineEdit()
@@ -33,9 +31,9 @@ class HomePage(QWidget):
     def initUI(self):
         main_layout = QVBoxLayout()
 
-        image_width = int(self.width() * 0.30)
-        image_height = int(self.height() * 0.30)
-        pokemon_logo = QPixmap(os.path.join(ASSET_DIR, 'pokemon_logo.png'))
+        image_width = int(self.width() * 0.20)
+        image_height = int(self.height() * 0.20)
+        pokemon_logo = QPixmap(os.path.join(ASSETS_DIR, 'pokemon_logo.png'))
         self.pokemon_logo.setPixmap(
             pokemon_logo.scaled(
                 image_width, image_height,
@@ -47,10 +45,15 @@ class HomePage(QWidget):
         self.search_input.returnPressed.connect(self.handle_search)
 
         main_layout.addWidget(self.pokemon_logo)
+        main_layout.addSpacing(50)
         main_layout.addWidget(self.welcome_label, alignment=Qt.AlignHCenter)
+        main_layout.addSpacing(-15)
+        main_layout.addWidget(self.title_label, alignment=Qt.AlignHCenter)
         main_layout.addWidget(self.subtitle, alignment=Qt.AlignHCenter)
+        main_layout.addSpacing(15)
         main_layout.addWidget(self.search_input, alignment=Qt.AlignHCenter)
         main_layout.setAlignment(Qt.AlignCenter)
+        
         self.setLayout(main_layout)
 
 
@@ -59,9 +62,16 @@ class HomePage(QWidget):
             QLabel {
                 background-color: transparent;        
             }
+
+            QLabel#welcome {
+                font-size: 20px;
+                color: #575859;
+            }
+            
             QLabel#title {
-                font-size: 25px;
-            } 
+                font-size: 30px;
+                font-weight: Bold;
+            }
                         
             QLabel#desc {
                 font-size: 15px;
