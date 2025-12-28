@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import (
     QLabel,
     QLineEdit,
@@ -33,19 +33,25 @@ class HomePage(QWidget):
 
         image_width = int(self.width() * 0.20)
         image_height = int(self.height() * 0.20)
-        pokemon_logo = QPixmap(os.path.join(ASSETS_DIR, 'pokemon_logo.png'))
+        pokemon_logo = QPixmap(os.path.join(ASSETS_DIR, 'pokemon-logo.png'))
         self.pokemon_logo.setPixmap(
             pokemon_logo.scaled(
                 image_width, image_height,
                 Qt.KeepAspectRatio,
                 Qt.SmoothTransformation))
         self.pokemon_logo.setAlignment(Qt.AlignHCenter)
-        
-        self.search_input.setPlaceholderText("Search")
+
+        self.subtitle.setWordWrap(True)
+        self.subtitle.setAlignment(Qt.AlignCenter)
+
+        search_icon = QIcon(os.path.join(ASSETS_DIR, 'search-icon.png'))
+        self.search_input.addAction(search_icon, QLineEdit.LeadingPosition)
+        self.search_input.setPlaceholderText("Search Pokémon...")
         self.search_input.returnPressed.connect(self.handle_search)
 
+        main_layout.addSpacing(-120)
         main_layout.addWidget(self.pokemon_logo)
-        main_layout.addSpacing(50)
+        main_layout.addSpacing(80)
         main_layout.addWidget(self.welcome_label, alignment=Qt.AlignHCenter)
         main_layout.addSpacing(-15)
         main_layout.addWidget(self.title_label, alignment=Qt.AlignHCenter)
@@ -60,12 +66,13 @@ class HomePage(QWidget):
     def styleUI(self):
         self.setStyleSheet("""
             QLabel {
-                background-color: transparent;        
+                background-color: transparent;      
             }
 
             QLabel#welcome {
                 font-size: 20px;
-                color: #575859;
+                font-weight: Bold;
+                color: #737475;
             }
             
             QLabel#title {
@@ -74,15 +81,16 @@ class HomePage(QWidget):
             }
                         
             QLabel#desc {
-                font-size: 15px;
+                font-size: 13px;
                 color: #575859;
             }
             
             QLineEdit {
                 padding: 7px;
+                padding-left: 15px;
                 min-width: 220px;
                 border: 1px solid #1e1f21;
-                border-radius: 10px;
+                border-radius: 20px;
                 background: qlineargradient(
                     x1: 0, y1: 0, 
                     x2: 1, y2: 1, 
