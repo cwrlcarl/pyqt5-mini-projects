@@ -44,17 +44,22 @@ class PokemonInfo(QWidget):
     def initUI(self):
         main_layout = QVBoxLayout()
 
-        back_button = QIcon(os.path.join(ASSETS_DIR, 'left_arrow.png'))
+        back_button = QIcon(os.path.join(ASSETS_DIR, 'left-arrow-icon.png'))
         self.back_btn.setIcon(back_button)
         self.back_btn.setIconSize(QSize(15, 15))
         self.back_btn.setCursor(Qt.PointingHandCursor)
         self.back_btn.clicked.connect(self.on_back)
 
+        search_icon = QIcon(os.path.join(ASSETS_DIR, 'search-icon.png'))
+        self.search_input.addAction(search_icon, QLineEdit.LeadingPosition)
+        self.search_input.setPlaceholderText("Search Pokémon...")
+        self.search_input.returnPressed.connect(self.handle_search)
+
         search_field = QHBoxLayout()
         search_field.addWidget(self.back_btn)
         search_field.addWidget(self.search_input)
 
-        self.search_input.setPlaceholderText("Search pokemon..")
+        self.search_input.setPlaceholderText("Search Pokémon...")
         self.search_input.returnPressed.connect(self.handle_search)
         
         self.pokemon_img.setAlignment(Qt.AlignHCenter)
@@ -166,6 +171,7 @@ class PokemonInfo(QWidget):
                            
             QLineEdit {
                 padding: 7px;
+                padding-left: 12px;
                 border: 1px solid #1e1f21;
                 border-radius: 10px;
                 background: qlineargradient(
