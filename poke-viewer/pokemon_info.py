@@ -1,10 +1,12 @@
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import (
+    QFrame,
     QHBoxLayout,
     QLabel,
     QLineEdit,
     QPushButton,
+    QTextEdit,
     QVBoxLayout,
     QWidget
 )
@@ -30,7 +32,7 @@ class PokemonInfo(QWidget):
         self.pokemon_id = QLabel(objectName="id")
         self.pokemon_type = QLabel()
         self.pokemon_type2 = QLabel()
-        self.pokemon_description = QLabel(objectName="desc")
+        self.pokemon_description = QTextEdit()
         self.pokemon_weight = QLabel()
         self.pokemon_height = QLabel()
         self.hp_stat = QLabel()
@@ -76,7 +78,13 @@ class PokemonInfo(QWidget):
         pokemon_type.addWidget(self.pokemon_type2, alignment=Qt.AlignHCenter)
         pokemon_type.setAlignment(Qt.AlignHCenter)
 
-        self.pokemon_description.setWordWrap(True)
+        self.pokemon_description.setReadOnly(True)
+        self.pokemon_description.setFrameStyle(QFrame.NoFrame)
+        self.pokemon_description.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.pokemon_description.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.pokemon_description.setFixedHeight(100)
+        self.pokemon_description.setContentsMargins(0, 0, 0, 0)
+        self.pokemon_description.document().setDocumentMargin(0)
 
         weight_and_height = QHBoxLayout()
         weight_and_height.setContentsMargins(0, 0, 0, 0)
@@ -115,7 +123,7 @@ class PokemonInfo(QWidget):
 
         card.setContentsMargins(20, 20, 20, 10)
         container.setLayout(card)
-        container.setFixedSize(350, 470)
+        container.setFixedSize(340, 470)
 
         main_layout.addLayout(search_field)
         main_layout.addWidget(container, alignment=Qt.AlignHCenter)
@@ -164,7 +172,8 @@ class PokemonInfo(QWidget):
                 color: #575859;
             }
                            
-            QLabel#desc {
+            QTextEdit {
+                background-color: transparent;
                 font-size: 13px;
                 color: #575859;
             }
