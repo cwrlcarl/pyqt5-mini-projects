@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget
 )
-from pokemon_type import TYPE_COLORS
+from helper import *
 import os
 import requests
 
@@ -122,12 +122,12 @@ class PokemonInfo(QWidget):
                 card.addWidget(layout)
 
         card.setContentsMargins(20, 20, 20, 10)
+        card.setSpacing(10)
         container.setLayout(card)
         container.setFixedSize(340, 470)
 
         main_layout.addLayout(search_field)
         main_layout.addWidget(container, alignment=Qt.AlignHCenter)
-        main_layout.setSpacing(20)
         main_layout.setContentsMargins(30, 30, 30, 30)
 
         self.setLayout(main_layout)
@@ -161,23 +161,24 @@ class PokemonInfo(QWidget):
             QLabel {
                 background-color: transparent;              
             } 
-                                     
+
             QLabel#name {
                 font-size:25px;
                 font-weight: Bold;
             }
-                           
+
             QLabel#id {
                 font-size: 15px;
                 color: #575859;
             }
-                           
+
             QTextEdit {
-                background-color: transparent;
+                padding-top: 7px;
                 font-size: 13px;
                 color: #575859;
+                background-color: transparent;
             }
-                           
+
             QLineEdit {
                 padding: 7px;
                 padding-left: 12px;
@@ -212,17 +213,17 @@ class PokemonInfo(QWidget):
             types = pokemon_data['type']
 
             self.pokemon_type.setText(types[0])
-            self.set_type_style(self.pokemon_type, types[0])
+            set_type_style(self.pokemon_type, types[0])
 
             if len(types) == 2:
                 self.pokemon_type2.setText(pokemon_data['type'][1])
-                self.set_type_style(self.pokemon_type2, types[1])
+                set_type_style(self.pokemon_type2, types[1])
                 self.pokemon_type2.show()
             else:
                 self.pokemon_type2.hide()
 
-            weight = self.convert_weight(pokemon_data['weight'])
-            height = self.convert_height(pokemon_data['height'])
+            weight = convert_weight(pokemon_data['weight'])
+            height = convert_height(pokemon_data['height'])
 
             self.pokemon_name.setText(pokemon_data['name'])
             self.pokemon_id.setText(f"#{pokemon_data['id']:04d}")
@@ -293,47 +294,9 @@ class PokemonInfo(QWidget):
             pixmap.loadFromData(image_data)
 
             self.pokemon_img.setPixmap(
-                pixmap.scaled(200, 200, Qt.KeepAspectRatio,
+                pixmap.scaled(180, 180, Qt.KeepAspectRatio,
                               Qt.SmoothTransformation)
             )
         except Exception as e:
             print(f"Error fetching image: {e}")
             return None
-
-
-    def set_type_style(self, label, type_name):
-        color = TYPE_COLORS.get(type_name, '#9d9fa1')
-        bg_color = self.hex_to_rgba(color, 0.15)
-        
-        label.setStyleSheet(f"""                            
-            QLabel {{
-                max-height: 20px;
-                padding: 1px 8px;
-                font-size: 13px;
-                border-radius: 10px;
-                border: 1px solid {color};
-                background-color: {bg_color};
-                color: {color};
-            }}
-        """)
-
-
-    def hex_to_rgba(self, hex_color, alpha):
-        hex_color = hex_color.lstrip('#')
-        r = int(hex_color[0:2], 16)
-        g = int(hex_color[2:4], 16)
-        b = int(hex_color[4:6], 16)
-        return f'rgba({r}, {g}, {b}, {alpha})'
-
-
-    def convert_weight(self, hectogram):
-        kilogram = hectogram / 10
-        pound = kilogram * 2.20462
-        return f"{pound:.1f} lbs"
-
-
-    def convert_height(self, decimeter):
-        meter = decimeter / 10
-        feet = meter * 3.28084
-        inch = (feet - int(feet)) * 12
-        return f"{feet:.0f}'{inch:.0f}\""
