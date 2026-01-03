@@ -1,16 +1,11 @@
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import (
-    QFrame,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QTextEdit,
-    QVBoxLayout,
-    QWidget
+    QFrame, QGridLayout, QHBoxLayout,
+    QLabel, QLineEdit, QPushButton,
+    QTextEdit, QVBoxLayout, QWidget
 )
-from helper import *
+from helpers import *
 import os
 import requests
 
@@ -60,9 +55,6 @@ class PokemonInfo(QWidget):
         search_field = QHBoxLayout()
         search_field.addWidget(self.back_btn)
         search_field.addWidget(self.search_input)
-
-        self.search_input.setPlaceholderText("Search Pokémon...")
-        self.search_input.returnPressed.connect(self.handle_search)
         
         self.pokemon_img.setAlignment(Qt.AlignHCenter)
         
@@ -86,40 +78,31 @@ class PokemonInfo(QWidget):
         self.pokemon_description.setContentsMargins(0, 0, 0, 0)
         self.pokemon_description.document().setDocumentMargin(0)
 
-        weight_and_height = QHBoxLayout()
+        weight_and_height = QGridLayout()
         weight_and_height.setContentsMargins(0, 0, 0, 0)
-        weight_and_height.setSpacing(30)
-        weight_and_height.addWidget(self.pokemon_weight)
-        weight_and_height.addWidget(self.pokemon_height)
-        weight_and_height.addStretch()
+        weight_and_height.setSpacing(35)
+        weight_and_height.addWidget(self.pokemon_weight, 0, 0)
+        weight_and_height.addWidget(self.pokemon_height, 0, 1)
+        weight_and_height.setAlignment(Qt.AlignHCenter)
 
-        pokemon_stats = QHBoxLayout()
+        pokemon_stats = QGridLayout()
         pokemon_stats.setContentsMargins(0, 0, 0, 0)
-        pokemon_stats.setSpacing(30)
-        pokemon_stats.addWidget(self.hp_stat)
-        pokemon_stats.addWidget(self.attack_stat)
-        pokemon_stats.addWidget(self.defense_stat)
-        pokemon_stats.addStretch()
-
-        layouts = [
-            self.pokemon_img, name_and_id,
-            pokemon_type, self.pokemon_description,
-            weight_and_height, pokemon_stats
-        ]
-
-        horizontal_layouts = [
-            name_and_id, pokemon_type,
-            weight_and_height, pokemon_stats
-        ]
+        pokemon_stats.setSpacing(35)
+        pokemon_stats.addWidget(self.hp_stat, 0, 0)
+        pokemon_stats.addWidget(self.attack_stat, 0, 1)
+        pokemon_stats.addWidget(self.defense_stat, 0, 2)
+        pokemon_stats.setAlignment(Qt.AlignHCenter)
 
         container = QWidget(objectName="card")
         card = QVBoxLayout()
 
-        for layout in layouts: 
-            if layout in horizontal_layouts:
-                card.addLayout(layout)
-            else:
-                card.addWidget(layout)
+        card.addWidget(self.pokemon_img)
+        card.addLayout(name_and_id)
+        card.addSpacing(-10)
+        card.addLayout(pokemon_type)
+        card.addWidget(self.pokemon_description)
+        card.addLayout(weight_and_height)
+        card.addLayout(pokemon_stats)
 
         card.setContentsMargins(20, 20, 20, 10)
         card.setSpacing(10)
@@ -169,6 +152,7 @@ class PokemonInfo(QWidget):
 
             QLabel#id {
                 font-size: 15px;
+                font-weight: Bold;
                 color: #575859;
             }
 
