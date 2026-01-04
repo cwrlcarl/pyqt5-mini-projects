@@ -87,7 +87,7 @@ class HomePage(QWidget):
             
             QLineEdit {
                 padding: 7px;
-                padding-left: 15px;
+                padding-left: 12px;
                 min-width: 220px;
                 border: 1px solid #1e1f21;
                 border-radius: 20px;

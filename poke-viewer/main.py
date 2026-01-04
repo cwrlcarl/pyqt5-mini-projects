@@ -1,4 +1,3 @@
-import sys
 from PyQt5.QtWidgets import (
     QApplication,
     QStackedWidget,
@@ -7,6 +6,7 @@ from PyQt5.QtWidgets import (
 )
 from homepage import HomePage
 from pokemon_info import PokemonInfo
+import sys
 
 
 class PokemonViewer(QWidget):
@@ -55,7 +55,7 @@ class PokemonViewer(QWidget):
         success = self.pokemon_info.display_pokemon(pokemon_name.lower())
         if success:
             self.stacked_widget.setCurrentIndex(1)
-        else:
+        else:   
             print(f"Pokemon {pokemon_name} not found!")
 
 
